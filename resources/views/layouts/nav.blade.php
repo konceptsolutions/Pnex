@@ -37,16 +37,13 @@
         </li>
         <li>
             <a class="has-arrow" href="javascript:;">
-                <div class="parent-icon"><i class="bx bx-lock"></i>
+                <div class="parent-icon"><i class="bx bx-group"></i>
                 </div>
-                <div class="menu-title">Authentication</div>
+                <div class="menu-title">Manage Users</div>
             </a>
             <ul>
-                <li> <a href="{{ url('authentication-signin') }}" target="_blank"><i
-                            class="bx bx-right-arrow-alt"></i>Sign In</a>
-                </li>
-                <li> <a href="{{ url('authentication-signup') }}" target="_blank"><i
-                            class="bx bx-right-arrow-alt"></i>Sign Up</a>
+                <li> <a href="{{ url('getUsers') }}" ><i
+                            class="bx bx-right-arrow-alt"></i>Users List</a>
                 </li>
             </ul>
         </li>

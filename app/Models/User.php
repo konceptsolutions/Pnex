@@ -50,4 +50,8 @@ class User extends Authenticatable
     public function role(){
         return $this->belongsTo(Role::class);
     }
+
+    public function referedBy(){
+        return $this->belongsTo(User::class,'reference_id');
+    }
 }
