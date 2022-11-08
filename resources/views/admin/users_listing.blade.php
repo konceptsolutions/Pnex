@@ -29,8 +29,8 @@
                                 <div class="card-body">
                                     <div class="d-lg-flex align-items-center mb-4 gap-3">
                                       <div class="ms-auto">
-                                        {{-- <a href="javascript:;" class="btn btn-danger radius-30 mt-2 mt-lg-0"><i class="bx bxs-plus-square"></i>Add New User</a> --}}
-                                        <button type="button" class="btn btn-outline-info px-3 radius-30"><i class="bx bxs-plus-square"></i>New User</button>
+                                        <button type="button" id="reset" class="btn btn-outline-danger px-3 radius-30"><i class="fadeIn animated bx bx-eraser"></i> Reset</button>
+                                        <button type="button" class="btn btn-outline-info px-3 radius-30"><i class="bx bxs-plus-square"></i> Add New</button>
                                     </div>
                                     </div>
 
@@ -42,21 +42,21 @@
                                                     <br></a>
                                             </li>
                                             <li class="nav-item">
-                                                <a class="nav-link" href="#step-1">	<strong>Level 1</strong>
+                                                <a class="nav-link" href="#level-1">	<strong>Level 1</strong>
                                                     <br></a>
                                             </li>
                                             <li class="nav-item">
-                                                <a class="nav-link" href="#step-2">	<strong>Level 2</strong>
+                                                <a class="nav-link" href="#level-2">	<strong>Level 2</strong>
                                                     <br></a>
                                             </li>
                                             <li class="nav-item">
-                                                <a class="nav-link" href="#step-3">	<strong>Level 3</strong>
+                                                <a class="nav-link" href="#level-3">	<strong>Level 3</strong>
                                                     <br></a>
                                             </li>
 
                                         </ul>
                                         <div class="tab-content">
-                                            <div id="all-Users" class="tab-pane" role="tabpanel" aria-labelledby="step-1">
+                                            <div id="all-Users" class="tab-pane" role="tabpanel" aria-labelledby="level-1">
                                                 <h5>Users List</h5>
                                                 <div class="table-responsive" >
                                                     <table id="example"  class="table table-striped table-bordered" style="width:99%">
@@ -120,8 +120,8 @@
                                                     </table>
                                                 </div>
                                             </div>
-                                            <div id="step-1" class="tab-pane" role="tabpanel" aria-labelledby="step-1">
-                                                <h5>Step 1 Content</h5>
+                                            <div id="level-1" class="tab-pane" role="tabpanel" aria-labelledby="level-1">
+                                                <h5>Level 1 Content</h5>
                                                 <div class="table-responsive">
                                                     <table id="example"  class="table table-striped table-bordered" style="width:99%">
                                                         <thead>
@@ -147,8 +147,8 @@
                                                     </table>
                                                 </div>
                                             </div>
-                                            <div id="step-2" class="tab-pane" role="tabpanel" aria-labelledby="step-2">
-                                                <h5>Step 2 Content</h5>
+                                            <div id="level-2" class="tab-pane" role="tabpanel" aria-labelledby="level-2">
+                                                <h5>Level 2 Content</h5>
                                                 <div>
                                                     <div class="table-responsive" >
                                                         <table id="example"  class="table table-striped table-bordered" style="width:99%">
@@ -176,8 +176,8 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div id="step-3" class="tab-pane" role="tabpanel" aria-labelledby="step-3">
-                                                <h5>Step 3 Content</h5>
+                                            <div id="level-3" class="tab-pane" role="tabpanel" aria-labelledby="level-3">
+                                                <h5>Level 3 Content</h5>
                                                 <div class="table-responsive" >
                                                     <table id="example"  class="table table-striped table-bordered" style="width:99%">
                                                         <thead>
@@ -233,12 +233,12 @@
 				}
 			});
 			// External Button Events
-			$(".reset-btn").on("click", function () {
+			$("#reset").on("click", function () {
 				// Reset wizard
 				$('#smartwizard').smartWizard("reset");
 				return true;
 			});
-			$(".next-btn").on("click", function () {
+			$("#next").on("click", function () {
 				// Navigate next
 				$('#smartwizard').smartWizard("next");
 				return true;
@@ -253,16 +253,20 @@
 
     <script>
 
-        function viewUsers(step, user_id){
+        function viewUsers(level, user_id){
             $.ajax({
             type:'GET',
             url:"{{ url('getUsersAjax') }}",
             data:{
-                step:step,
+                level:level,
                 user_id:user_id
             },
             success:function(data){
-                $('#step-'+step).html(data);
+                $('#level-'+level).html(data);
+                if (level < 4) {
+                    $('#smartwizard').smartWizard("next");
+                    return true;
+                }
             }
             });
         }

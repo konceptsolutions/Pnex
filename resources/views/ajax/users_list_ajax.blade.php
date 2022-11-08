@@ -1,6 +1,9 @@
-<h5>{{ $users[0]->referedBy->name ?? '' }} :: Level {{ $step }}</h5>
+{{-- <h5>{{ $levelsHeading }}</h5> --}}
+<div class="chip chip-lg bg-info text-white px-4">Atif Naz</div><i class="lni lni-angle-double-right"></i>
+<div class="chip px-4">Bilal Khan</div><i class="lni lni-angle-double-right"></i>
+<div class="chip px-4">Nasir Khan</div>
 <div class="table-responsive">
-    <table id="example{{ $step }}"  class="table table-striped table-bordered" style="width:99%">
+    <table id="example{{ $level }}"  class="table table-striped table-bordered" style="width:99%">
         <thead>
             <tr>
                 <th>Sr #</th>
@@ -15,6 +18,11 @@
             </tr>
         </thead>
         <tbody>
+            @if (count($users) == 0)
+                <tr>
+                    <td colspan="10" style="text-align: center"> No Record Found</td>
+                </tr>
+            @endif
             @php($i = 1)
             @foreach ($users as $user)
                 <tr>
@@ -49,7 +57,7 @@
                             <a class="dropdown-toggle dropdown-toggle-nocaret" href="#" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded font-22 text-option"></i>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a onclick="viewUsers({{ $step }},{{ $user->id }})"  class="{{ $step == 3? 'reset-btn':'next-btn' }} dropdown-item" href="javascript:;">View Users</a>
+                                <li><a onclick="viewUsers({{ $level+1 }},{{ $user->id }})"  class="{{ $level == 3? 'reset-btn':'next-btn' }} dropdown-item" href="javascript:;">View Users</a>
                                 </li>
                                 <li><a class="reset-btn dropdown-item" href="javascript:;" >View Full Network</a>
                                 </li>
