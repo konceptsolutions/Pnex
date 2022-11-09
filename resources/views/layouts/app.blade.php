@@ -1,5 +1,9 @@
+<?php
+    use App\Services\Settings;
+?>
+
 <!doctype html>
-<html lang="en">
+<html lang="en" class="{{ Settings::$theme }}">
 
 <head>
 	<!-- Required meta tags -->
@@ -161,6 +165,18 @@
                 $(this).alert('close');
             });
         });
+
+        // function setTheme(theme){
+        //     $.ajax({
+        //     type:'GET',
+        //     url:"{{ url('setTheme') }}",
+        //     data:{
+        //         theme:theme
+        //     },
+        //     success:function(data){
+
+        //     });
+        // }
     </script>
 	@yield("script")
 </body>

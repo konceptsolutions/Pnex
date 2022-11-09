@@ -92,23 +92,26 @@ class UserController extends Controller
     public function getUsersAjax(Request $req)
     {
 
-        $levelsHeading = '';
         if ($req->level == 1) {
             $user = User::find($req->user_id);
             $name = $user->name;
-            $levelsHeading = $name.' :: Level 1';
+            // $levelsHeading = $name.' :: Level 1';
+            $levelsHeadingArray = array('name1'=>$name);
         }elseif ($req->level == 2) {
             $user = User::with('referedBy')->find($req->user_id);
             $name = $user->name;
-            $levelsHeading = $user->referedBy->name.' :: Level 2 '.$name.' :: Level 1';
+            // $levelsHeading = $user->referedBy->name.' :: Level 2 '.$name.' :: Level 1';
+            $levelsHeadingArray = array('name1'=>$user->referedBy->name,'name2'=>$name);
         }
         elseif ($req->level == 3) {
             $user = User::with('referedBy')->find($req->user_id);
             $name = $user->name;
             $parent = User::with('referedBy')->find($user->referedBy->id);
-            $levelsHeading = $parent->referedBy->name.' :: Level 3 '.$user->referedBy->name.' :: Level 2 '.$name.' :: Level 1';
+            // $levelsHeading = $parent->referedBy->name.' :: Level 3 '.$user->referedBy->name.' :: Level 2 '.$name.' :: Level 1';
+            $levelsHeadingArray = array('name1'=>$parent->referedBy->name, 'name2'=>$user->referedBy->name,'name3'=>$name);
+
         }
         $users = User::with('referedBy')->where('reference_id',$req->user_id)->get();
-        return view('ajax.users_list_ajax',['users'=>$users,'level'=>$req->level,'levelsHeading'=>$levelsHeading]);
+        return view('ajax.users_list_ajax',['users'=>$users,'level'=>$req->level,'levelsHeadingArray'=>$levelsHeadingArray]);
     }
 }

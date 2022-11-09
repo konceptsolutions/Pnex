@@ -29,7 +29,7 @@
                                 <div class="card-body">
                                     <div class="d-lg-flex align-items-center mb-4 gap-3">
                                       <div class="ms-auto">
-                                        <button type="button" id="reset" class="btn btn-outline-danger px-3 radius-30"><i class="fadeIn animated bx bx-eraser"></i> Reset</button>
+                                        <button type="button" onclick="reset()" class="btn btn-outline-danger px-3 radius-30"><i class="fadeIn animated bx bx-eraser"></i> Reset</button>
                                         <button type="button" class="btn btn-outline-info px-3 radius-30"><i class="bx bxs-plus-square"></i> Add New</button>
                                     </div>
                                     </div>
@@ -233,16 +233,7 @@
 				}
 			});
 			// External Button Events
-			$("#reset").on("click", function () {
-				// Reset wizard
-				$('#smartwizard').smartWizard("reset");
-				return true;
-			});
-			$("#next").on("click", function () {
-				// Navigate next
-				$('#smartwizard').smartWizard("next");
-				return true;
-			});
+            reset();
 		});
 	</script>
     <script>
@@ -252,6 +243,22 @@
 	</script>
 
     <script>
+
+        function reset(){
+            $('#smartwizard').smartWizard("reset");
+            return true;
+        }
+
+        function next(){
+            $('#smartwizard').smartWizard("next");
+            return true;
+        }
+
+        function viewFullNetwork(user_id){
+            reset();
+            viewUsers(1,user_id);
+            // next();
+        }
 
         function viewUsers(level, user_id){
             $.ajax({
@@ -264,8 +271,7 @@
             success:function(data){
                 $('#level-'+level).html(data);
                 if (level < 4) {
-                    $('#smartwizard').smartWizard("next");
-                    return true;
+                    next();
                 }
             }
             });

@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
+use App\Services\Settings;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('setTheme', [Settings::class, 'setTheme' ]);
 Route::get('logout', [AuthController::class, 'logout' ]);
 Route::middleware([AlreadyLoggedIn::class])->group(function () {
     Route::get('/', function () {
