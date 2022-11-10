@@ -10,13 +10,13 @@
                 <div class="page-content">
                     <!--breadcrumb-->
                     <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-                        <div class="breadcrumb-title pe-3">Manage Users</div>
+                        <div class="breadcrumb-title pe-3">Team</div>
                         <div class="ps-3">
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb mb-0 p-0">
                                     <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item active" aria-current="page">Users List</li>
+                                    <li class="breadcrumb-item active" aria-current="page">Team Members</li>
                                 </ol>
                             </nav>
                         </div>
@@ -38,10 +38,6 @@
                                     <div id="smartwizard">
                                         <ul class="nav">
                                             <li class="nav-item">
-                                                <a class="nav-link" href="#all-Users">	<strong>All Users</strong>
-                                                    <br></a>
-                                            </li>
-                                            <li class="nav-item">
                                                 <a class="nav-link" href="#level-1">	<strong>Level 1</strong>
                                                     <br></a>
                                             </li>
@@ -56,8 +52,8 @@
 
                                         </ul>
                                         <div class="tab-content">
-                                            <div id="all-Users" class="tab-pane" role="tabpanel" aria-labelledby="level-1">
-                                                <h5>Users List</h5>
+                                            <div id="level-1" class="tab-pane" role="tabpanel" aria-labelledby="level-1">
+                                                <h5>Level 1</h5>
                                                 <div class="table-responsive" >
                                                     <table id="example"  class="table table-striped table-bordered" style="width:99%">
                                                         <thead>
@@ -120,8 +116,8 @@
                                                     </table>
                                                 </div>
                                             </div>
-                                            <div id="level-1" class="tab-pane" role="tabpanel" aria-labelledby="level-1">
-                                                <h5>Level 1 Content</h5>
+                                            <div id="level-2" class="tab-pane" role="tabpanel" aria-labelledby="level-2">
+                                                <h5>Level 2 Content</h5>
                                                 <div class="table-responsive">
                                                     <table id="example"  class="table table-striped table-bordered" style="width:99%">
                                                         <thead>
@@ -147,8 +143,8 @@
                                                     </table>
                                                 </div>
                                             </div>
-                                            <div id="level-2" class="tab-pane" role="tabpanel" aria-labelledby="level-2">
-                                                <h5>Level 2 Content</h5>
+                                            <div id="level-3" class="tab-pane" role="tabpanel" aria-labelledby="level-3">
+                                                <h5>Level 3 Content</h5>
                                                 <div>
                                                     <div class="table-responsive" >
                                                         <table id="example"  class="table table-striped table-bordered" style="width:99%">
@@ -176,34 +172,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div id="level-3" class="tab-pane" role="tabpanel" aria-labelledby="level-3">
-                                                <h5>Level 3 Content</h5>
-                                                <div class="table-responsive" >
-                                                    <table id="example"  class="table table-striped table-bordered" style="width:99%">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Sr #</th>
-                                                                <th>Name</th>
-                                                                <th>Email</th>
-                                                                <th>Phone No</th>
-                                                                <th>Reference No</th>
-                                                                <th>Refered By</th>
-                                                                <th>User Type</th>
-                                                                <th>Status</th>
-                                                                <th>Actions</th>
-                                                                <th>View</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td colspan="10" style="text-align: center"> No Record Found</td>
-                                                            </tr>
-                                                        </tbody>
-
-                                                    </table>
-                                                </div>
-                                            </div>
-
                                         </div>
                                     </div>
                                 </div>

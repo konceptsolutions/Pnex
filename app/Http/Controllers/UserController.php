@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class UserController extends Controller
 {
@@ -113,5 +114,18 @@ class UserController extends Controller
         }
         $users = User::with('referedBy')->where('reference_id',$req->user_id)->get();
         return view('ajax.users_list_ajax',['users'=>$users,'level'=>$req->level,'levelsHeadingArray'=>$levelsHeadingArray]);
+    }
+
+
+    /**
+     * Display a listing of the resource for the user
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function viewTeam()
+    {
+        $user_id = Session::get('user_id');
+        $users = User::with('referedBy')->where('reference_id',$user_id)->get();
+        return view('user.users_listing',['users'=>$users]);
     }
 }

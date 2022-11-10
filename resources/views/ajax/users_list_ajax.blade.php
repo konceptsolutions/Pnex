@@ -65,10 +65,10 @@
                             </a>
                             <ul class="dropdown-menu">
                                 @if ($level < 3)
-                                    <li><a onclick="viewUsers({{ $level+1 }},{{ $user->id }})" class="dropdown-item" href="javascript:;">View Users</a>
+                                    <li><a onclick="viewUsers({{ $level+1 }},{{ $user->id }})" class="dropdown-item" href="javascript:;">View Team</a>
                                 @endif
                                 </li>
-                                <li><a onclick="viewFullNetwork({{ $user->id }})" class=" dropdown-item" href="javascript:;" >View Full Network</a>
+                                <li><a onclick="viewFullNetwork({{ $user->id }})" class=" dropdown-item" href="javascript:;" >View Full Team</a>
                                 </li>
                             </ul>
                         </div>

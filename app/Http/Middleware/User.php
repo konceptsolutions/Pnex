@@ -4,6 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
+
 
 class User
 {
@@ -16,6 +18,12 @@ class User
      */
     public function handle(Request $request, Closure $next)
     {
+        $role_id = Session::get('role_id');
+        if ($role_id != 2) {
+
+            return redirect('/');
+
+        }
         return $next($request);
     }
 }
