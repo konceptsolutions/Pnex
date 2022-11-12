@@ -15,7 +15,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::with('referedBy')->where('role_id',2)->get();
+        $users = User::sortable()->with('referedBy')->where('role_id',2)->paginate(10);
         return view('admin.users_listing',['users'=>$users]);
     }
 
@@ -112,8 +112,8 @@ class UserController extends Controller
             $levelsHeadingArray = array('name1'=>$parent->referedBy->name, 'name2'=>$user->referedBy->name,'name3'=>$name);
 
         }
-        $users = User::with('referedBy')->where('reference_id',$req->user_id)->get();
-        return view('ajax.users_list_ajax',['users'=>$users,'level'=>$req->level,'levelsHeadingArray'=>$levelsHeadingArray]);
+        $users = User::sortable()->with('referedBy')->where('reference_id',$req->user_id)->paginate(10);
+        return view('ajax.users_list_ajax',['users'=>$users,'level'=>$req->level,'levelsHeadingArray'=>$levelsHeadingArray,'referedBy'=>$req->user_id]);
     }
 
 
@@ -125,7 +125,26 @@ class UserController extends Controller
     public function viewTeam()
     {
         $user_id = Session::get('user_id');
-        $users = User::with('referedBy')->where('reference_id',$user_id)->get();
+        $users = User::sortable()->with('referedBy')->where('reference_id',$user_id)->paginate(10);
         return view('user.users_listing',['users'=>$users]);
+    }
+
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getPaginatedUsersAjax(Request $req)
+    {
+        $referedBy = $req->referedBy;
+        $users = User::sortable()->with('referedBy')
+        ->when($referedBy,function($qu)use($referedBy){
+            $qu->where('reference_id',$referedBy);
+        })
+        ->where('role_id',2)
+        ->paginate(10);
+        $level = $req->level;
+        return view('ajax.getPaginatedUsersAjax',['users'=>$users,'level'=>$level]);
     }
 }

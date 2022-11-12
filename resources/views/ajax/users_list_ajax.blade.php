@@ -9,20 +9,22 @@
     <div class="chip px-4">{{ $levelsHeadingArray['name2'] }}</div> <i class="lni lni-angle-double-right"></i>
     <div class="chip chip-lg bg-info text-white px-4">{{ $levelsHeadingArray['name3'] }}</div>
 @endif
-<div class="table-responsive">
-    <table id="example{{ $level }}"  class="table table-striped table-bordered" style="width:99%">
+<div class="table-responsive" id="responsive{{ $level }}">
+    <input type="hidden" id="referedBy{{ $level }}" value="{{ $referedBy }}">
+    <table id="table{{ $level }}"  class="table table-striped table-bordered" style="width:100%">
         <thead>
-            <tr>
-                <th>Sr #</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone No</th>
-                <th>Reference No</th>
-                <th>Refered By</th>
-                <th>User Type</th>
-                <th>Status</th>
-                <th colspan="2" class="text-center">Actions</th>
-            </tr>
+            <tr class="sortLinks">
+                <th> @sortablelink('id','Sr#')</th>
+                 <th>@sortablelink('name','Name')</th>
+                 <th>Email</th>
+                 <th>Phone No</th>
+                 <th>Reference No</th>
+                 <th>Refered By</th>
+                 <th>User Type</th>
+                 <th>@sortablelink('is_banned','Status')</th>
+                 <th  class="text-center">Actions</th>
+                 <th>View</th>
+             </tr>
         </thead>
         <tbody>
             @if (count($users) == 0)
@@ -30,10 +32,12 @@
                     <td colspan="10" style="text-align: center"> No Record Found</td>
                 </tr>
             @endif
-            @php($i = 1)
+            @php($srno = ($users->perPage() * ($users->currentPage() - 1)) )
             @foreach ($users as $user)
+            @php($srno++)
+
                 <tr>
-                    <td>{{ $i++ }}</td>
+                    <td>{{ $srno }}</td>
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->email }}</td>
                     <td>{{ $user->phone_no }}</td>
@@ -79,4 +83,20 @@
         </tbody>
 
     </table>
+
+
+<div class="row">
+    <div class="col-md-6">
+        <div>Showing {{($users->currentpage()-1)*$users->perpage()+1}} to {{$users->currentpage()*$users->perpage()}}
+            of  {{$users->total()}} entries
+        </div>
+    </div>
+    <div class="col-md-6">
+        <span class="pagination-span" id="span{{ $level }}">
+            @php( $users->onEachSide(1)->links())
+            {!! $users->appends(\Request::except('page'))->render() !!}
+        </span>
+    </div>
+</div>
+
 </div>
