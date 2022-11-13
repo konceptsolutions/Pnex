@@ -5,7 +5,11 @@
             <img src="assets/images/logo-icon.png" class="logo-icon" alt="logo icon">
         </div>
         <div>
-            <h4 class="logo-text">Rocker</h4>
+            <h4 class="logo-text
+            @if ( $theme =='light-theme')
+            text-danger
+            @endif
+            ">Pnex</h4>
         </div>
         <div class="toggle-icon ms-auto"><i class='bx bx-arrow-to-left'></i>
         </div>
@@ -33,6 +37,11 @@
                 <ul>
                     <li> <a href="{{ url('addProduct') }}" ><i
                                 class="bx bx-right-arrow-alt"></i>Add Product</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li> <a href="{{ url('products') }}" ><i
+                                class="bx bx-right-arrow-alt"></i>Products</a>
                     </li>
                 </ul>
             </li>
@@ -64,7 +73,21 @@
                     </li>
                 </ul>
             </li>
-        @endif
+
+            <li>
+                <a class="has-arrow" href="javascript:;">
+                    <div class="parent-icon"><i class="bx bx-cart"></i>
+                    </div>
+                    <div class="menu-title"> Products</div>
+                </a>
+                <ul>
+                    <li> <a href="{{ url('products') }}" ><i
+                                class="bx bx-right-arrow-alt"></i>Products</a>
+                    </li>
+                </ul>
+            </li>
+            @endif
+            {{-- -----------------------------------Both admin and user Routes---------------------------------------------- --}}
 
     </ul>
     <!--end navigation-->

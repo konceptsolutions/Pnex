@@ -108,7 +108,6 @@ class UserController extends Controller
             $user = User::with('referedBy')->find($req->user_id);
             $name = $user->name;
             $parent = User::with('referedBy')->find($user->referedBy->id);
-            // $levelsHeading = $parent->referedBy->name.' :: Level 3 '.$user->referedBy->name.' :: Level 2 '.$name.' :: Level 1';
             $levelsHeadingArray = array('name1'=>$parent->referedBy->name, 'name2'=>$user->referedBy->name,'name3'=>$name);
 
         }

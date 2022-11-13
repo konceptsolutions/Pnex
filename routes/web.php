@@ -38,15 +38,20 @@ Route::middleware([NotLoggedIn::class])->group(function () {
     Route::get('dashboard', function () {
         return view('index');
     });
+    Route::get('getPaginatedUsersAjax', [UserController::class, 'getPaginatedUsersAjax'])->name('getPaginatedUsersAjax');
+
+    Route::get('getUsersAjax', [UserController::class, 'getUsersAjax'])->name('getUsersAjax');
+
+    Route::get('products', function () {
+        return view('products.products');
+    });
 });
 
 Route::middleware([Admin::class])->group(function () {
 
     Route::get('getUsers', [UserController::class, 'index']);
 
-    Route::get('getUsersAjax', [UserController::class, 'getUsersAjax'])->name('getUsersAjax');
 
-    Route::get('getPaginatedUsersAjax', [UserController::class, 'getPaginatedUsersAjax'])->name('getPaginatedUsersAjax');
 
     Route::get('/addProduct', function () {
         return view('products.add_product');

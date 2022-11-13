@@ -31,12 +31,81 @@
                                 <div class="card-body">
                                     <div class=" p-2 ">
                                         <div class="d-lg-flex align-items-center mb-4 gap-3">
-                                          <div class="ms-auto">
-                                            <button type="button" onclick="reset()" class="btn btn-outline-danger px-3 radius-30"><i class="fadeIn animated bx bx-eraser"></i> Reset</button>
-                                            <button type="button" class="btn btn-outline-info px-3 radius-30"><i class="bx bxs-plus-square"></i> Add New</button>
+                                            <div class="ms-auto">
+                                                <button type="button" onclick="reset()" class="btn btn-outline-danger px-3 "><i class="fadeIn animated bx bx-eraser"></i> Reset</button>
+                                                <button type="button" class="btn btn-outline-info px-3 " data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bxs-plus-square"></i> Add New</button>
+                                            </div>
                                         </div>
-                                        </div>
+                                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Create User Account</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="border p-4 rounded">
+                                                            <div class="form-body">
+                                                                <form class="row g-3 needs-validation" novalidate method="POST" >
+                                                                    @csrf
+                                                                    <div class="col-sm-12">
+                                                                        <label for="name" class="form-label">Full Name *</label>
+                                                                        <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}"
+                                                                            placeholder="Bilal Khan" required>
+                                                                        <div class="valid-feedback">Looks good!</div>
+                                                                        <div class="invalid-feedback">Please Enter Your Name</div>
+                                                                    </div>
 
+                                                                    <div class="col-12">
+                                                                        <label for="email" class="form-label">Email Address
+                                                                            *</label>
+                                                                        <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}"
+                                                                            placeholder="example@user.com" required>
+                                                                        <div class="valid-feedback">Looks good!</div>
+                                                                        <div class="invalid-feedback">Please Enter a Valid Email Address</div>
+                                                                    </div>
+                                                                    <div class="col-12">
+                                                                        <label for="password" class="form-label">Password *</label>
+                                                                        <div class="input-group" id="show_hide_password">
+                                                                            <input type="password" class="form-control border-end-0"
+                                                                                id="password" name="password" placeholder="Enter Password"
+                                                                                required minlength="5">
+                                                                            <a href="javascript:;" class="input-group-text bg-transparent"><i
+                                                                                    class='bx bx-hide'></i></a>
+                                                                            <div class="valid-feedback">Looks good!</div>
+                                                                            <div class="invalid-feedback">Password must be 5 characters long
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-12">
+                                                                        <label for="reference_no" class="form-label">Reference ID
+                                                                            *</label>
+                                                                        <input type="text" class="form-control" name="reference_no"
+                                                                            id="reference_no" placeholder="Reference ID" required value="{{ old('reference_no') }}">
+                                                                        <div class="valid-feedback">Looks good!</div>
+                                                                        <div class="invalid-feedback">Please Enter Reference ID</div>
+                                                                    </div>
+
+                                                                    <div class="col-12">
+                                                                        <label for="phone_no" class="form-label">Phone No
+                                                                            *</label>
+                                                                        <input type="number" class="form-control" id="phone_no"
+                                                                            name="phone_no" placeholder="Phone No" required minlength="11" value="{{ old('phone_no') }}">
+                                                                        <div class="valid-feedback">Looks good!</div>
+                                                                        <div class="invalid-feedback">Phone No must be 11 characters long</div>
+                                                                    </div>
+
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        <button type="button" class="btn btn-primary">Save changes</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <!-- SmartWizard html -->
                                         <div id="smartwizard">
                                             <ul class="nav">
@@ -266,7 +335,7 @@
 			var table = $('#usersTable').DataTable({
             lengthChange: false,
                 paging: false,
-                searching: false,
+
                 "info": false,
                 sort: false,
 		  });
@@ -278,6 +347,7 @@
 	</script>
 	<script>
         function reset(){
+            search('page=1',0);
             $('#smartwizard').smartWizard("reset");
             return true;
         }
@@ -309,7 +379,7 @@
                 var table = $('#table'+level).DataTable({
                     lengthChange: false,
                     paging: false,
-                    searching: false,
+
                     sort: false,
                     "info": false,
                 });
@@ -347,7 +417,7 @@
                     var table = $('#table1'+level).DataTable({
                         lengthChange: false,
                         paging: false,
-                        searching: false,
+
                         sort: false,
                         "info": false,
                     });
