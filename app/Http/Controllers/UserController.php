@@ -20,38 +20,6 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -96,12 +64,10 @@ class UserController extends Controller
         if ($req->level == 1) {
             $user = User::find($req->user_id);
             $name = $user->name;
-            // $levelsHeading = $name.' :: Level 1';
             $levelsHeadingArray = array('name1'=>$name);
         }elseif ($req->level == 2) {
             $user = User::with('referedBy')->find($req->user_id);
             $name = $user->name;
-            // $levelsHeading = $user->referedBy->name.' :: Level 2 '.$name.' :: Level 1';
             $levelsHeadingArray = array('name1'=>$user->referedBy->name,'name2'=>$name);
         }
         elseif ($req->level == 3) {
@@ -112,9 +78,28 @@ class UserController extends Controller
 
         }
         $users = User::sortable()->with('referedBy')->where('reference_id',$req->user_id)->paginate(10);
-        return view('ajax.users_list_ajax',['users'=>$users,'level'=>$req->level,'levelsHeadingArray'=>$levelsHeadingArray,'referedBy'=>$req->user_id]);
+        return view('admin.ajax.users_list_ajax',['users'=>$users,'level'=>$req->level,'levelsHeadingArray'=>$levelsHeadingArray,'referedBy'=>$req->user_id]);
     }
 
+    /**
+     * Displaying the listing of users called by ajax for pagination... For admin
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getPaginatedUsersAjax(Request $req)
+    {
+        $referedBy = $req->referedBy;
+        $users = User::sortable()->with('referedBy')
+        ->when($referedBy, function($qu) use($referedBy){
+            $qu->where('reference_id',$referedBy);
+        })
+        ->where('role_id',2)
+        ->paginate(10);
+        $level = $req->level;
+        return view('admin.ajax.paginated_users_ajax',['users'=>$users,'level'=>$level]);
+    }
+
+    //--------------------------Functions for user------------------------------------
 
     /**
      * Display a listing of the resource for the user
@@ -128,22 +113,45 @@ class UserController extends Controller
         return view('user.users_listing',['users'=>$users]);
     }
 
-
     /**
-     * Display a listing of the resource.
+     * Displaying the listing of users called by ajax for pagination... For user
      *
      * @return \Illuminate\Http\Response
      */
-    public function getPaginatedUsersAjax(Request $req)
+    public function getPaginatedTeamAjax(Request $req)
     {
+        // if (User::isAuthenticatedRequest($req->user_id, $req->level) == 0) {
+        //     return 'Unauthenticated Request';
+        // }
         $referedBy = $req->referedBy;
         $users = User::sortable()->with('referedBy')
-        ->when($referedBy,function($qu)use($referedBy){
-            $qu->where('reference_id',$referedBy);
-        })
-        ->where('role_id',2)
+        ->where('reference_id',$referedBy)
         ->paginate(10);
         $level = $req->level;
-        return view('ajax.getPaginatedUsersAjax',['users'=>$users,'level'=>$level]);
+        return view('user.ajax.paginated_users_ajax',['users'=>$users,'level'=>$level]);
+    }
+
+
+        /**
+     * Display a listing of the resource for the wizard .
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getTeamForWizard(Request $req)
+    {
+        // if (User::isAuthenticatedRequest($req->user_id, $req->level) == 0) {
+        //     return 'Unauthenticated Request';
+        // }
+        if ($req->level == 2) {
+            $user = User::find($req->user_id);
+            $name = $user->name;
+            $levelsHeadingArray = array('name1'=>$name);
+        }elseif ($req->level == 3) {
+            $user = User::with('referedBy')->find($req->user_id);
+            $name = $user->name;
+            $levelsHeadingArray = array('name1'=>$user->referedBy->name,'name2'=>$name);
+        }
+        $users = User::sortable()->with('referedBy')->where('reference_id',$req->user_id)->paginate(10);
+        return view('user.ajax.team_for_Wizard',['users'=>$users,'level'=>$req->level,'levelsHeadingArray'=>$levelsHeadingArray,'referedBy'=>$req->user_id]);
     }
 }

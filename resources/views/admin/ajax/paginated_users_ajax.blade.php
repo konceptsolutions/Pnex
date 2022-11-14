@@ -48,7 +48,11 @@
                         <a class="dropdown-toggle dropdown-toggle-nocaret" href="#" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded font-22 text-option"></i>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a onclick="viewUsers(1,{{ $user->id }})" class=" next-btn dropdown-item" href="javascript:;">View Team</a>
+                            @if ($level < 3)
+                                <li><a onclick="viewUsers({{ $level+1 }},{{ $user->id }})" class="dropdown-item" href="javascript:;">View Team</a>
+                            @endif
+                            </li>
+                            <li><a onclick="viewFullNetwork({{ $user->id }})" class=" dropdown-item" href="javascript:;" >View Full Team</a>
                             </li>
                         </ul>
                     </div>

@@ -56,11 +56,11 @@
                                         </ul>
                                         <div class="tab-content" >
                                             <div id="level-1" class="tab-pane" role="tabpanel" aria-labelledby="level-1">
-                                                <h5>Users List</h5>
-                                                <div class="table-responsive" id="responsive1" >
+                                                <h5>My Team</h5>
                                                 <input type="hidden" id="referedBy1" value="{{ Session::get('user_id') }}">
+                                                <div class="table-responsive" id="responsive1" >
 
-                                                    <table id="table0"  class="table table-striped table-bordered" style="width:100%">
+                                                    <table id="table1"  class="table table-striped table-bordered" style="width:100%">
                                                         <thead>
                                                             <tr class="sortLinks">
                                                                <th> @sortablelink('id','Sr#')</th>
@@ -102,7 +102,7 @@
                                                                             <a class="dropdown-toggle dropdown-toggle-nocaret" href="#" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded font-22 text-option"></i>
                                                                             </a>
                                                                             <ul class="dropdown-menu">
-                                                                                <li><a onclick="viewUsers(1,{{ $user->id }})" class=" next-btn dropdown-item" href="javascript:;">View Team</a>
+                                                                                <li><a onclick="viewUsers(2,{{ $user->id }})" class=" next-btn dropdown-item" href="javascript:;">View Team</a>
                                                                                 </li>
                                                                             </ul>
                                                                         </div>
@@ -119,7 +119,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <span class="pagination-span" id="span0">
+                                                            <span class="pagination-span" id="span1">
                                                                 @php( $users->onEachSide(1)->links())
                                                                 {!! $users->appends(\Request::except('page'))->render() !!}
                                                             </span>
@@ -219,25 +219,9 @@
     });
 </script>
 
-    <script>
-
-    $(document).ready(function() {
-        var table = $('#usersTable').DataTable({
-        lengthChange: false,
-            paging: false,
-            searching: false,
-            "info": false,
-            sort: false,
-      });
-
-      table.buttons().container()
-            .appendTo('#usersTable_wrapper .col-md-6:eq(0)');
-    });
-
-</script>
 <script>
     function reset(){
-        search('page=1',0);
+        search('page=1',1);
         $('#smartwizard').smartWizard("reset");
         return true;
     }
@@ -247,16 +231,10 @@
         return true;
     }
 
-    function viewFullNetwork(user_id){
-        reset();
-        viewUsers(1,user_id);
-        // next();
-    }
-
     function viewUsers(level, user_id){
         $.ajax({
         type:'GET',
-        url:"{{ url('getUsersAjax') }}",
+        url:"{{ url('getTeamForWizard') }}",
         data:{
             level:level,
             user_id:user_id
@@ -296,7 +274,7 @@
         function search(page,level){
             let referedBy = $("#referedBy"+level).val();
         $.ajax({
-            url: "{{route('getPaginatedUsersAjax')}}?"+page,
+            url: "{{route('getPaginatedTeamAjax')}}?"+page,
             method: 'GET',
             data: {
                 level:level,

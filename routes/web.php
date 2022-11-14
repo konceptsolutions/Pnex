@@ -38,9 +38,7 @@ Route::middleware([NotLoggedIn::class])->group(function () {
     Route::get('dashboard', function () {
         return view('index');
     });
-    Route::get('getPaginatedUsersAjax', [UserController::class, 'getPaginatedUsersAjax'])->name('getPaginatedUsersAjax');
 
-    Route::get('getUsersAjax', [UserController::class, 'getUsersAjax'])->name('getUsersAjax');
 
     Route::get('products', function () {
         return view('products.products');
@@ -51,7 +49,9 @@ Route::middleware([Admin::class])->group(function () {
 
     Route::get('getUsers', [UserController::class, 'index']);
 
+    Route::get('getPaginatedUsersAjax', [UserController::class, 'getPaginatedUsersAjax'])->name('getPaginatedUsersAjax');
 
+    Route::get('getUsersAjax', [UserController::class, 'getUsersAjax'])->name('getUsersAjax');
 
     Route::get('/addProduct', function () {
         return view('products.add_product');
@@ -60,11 +60,9 @@ Route::middleware([Admin::class])->group(function () {
 
 Route::middleware([User::class])->group(function () {
 
-    Route::get('/form-wizard', function () {
-        return view('user.form-wizard');
-    });
-
     Route::get('viewTeam', [UserController::class, 'viewTeam']);
 
-    // Route::get('getUsersAjax', [UserController::class, 'getUsersAjax'])->name('getUsersAjax');
+    Route::get('getPaginatedTeamAjax', [UserController::class, 'getPaginatedTeamAjax'])->name('getPaginatedTeamAjax');
+
+    Route::get('getTeamForWizard', [UserController::class, 'getTeamForWizard'])->name('getTeamForWizard');
 });
