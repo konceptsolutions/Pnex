@@ -39,10 +39,13 @@ Route::middleware([NotLoggedIn::class])->group(function () {
         return view('index');
     });
 
-
     Route::get('products', function () {
         return view('products.products');
     });
+
+    Route::get('/user-profile', [UserController::class, 'edit']);
+
+    Route::post('/updateUser', [UserController::class, 'update']);
 });
 
 Route::middleware([Admin::class])->group(function () {

@@ -57,7 +57,7 @@
                     </td>
                     <td>
                         <div class="d-flex order-actions">
-                            <a href="javascript:;" class=""><i class='bx bxs-edit'></i></a>
+                            <a href="user-profile?user_id={{ $user->id }}" class=""><i class='bx bxs-edit'></i></a>
                             <a href="javascript:;" class="ms-3"><i class='bx bxs-trash text-danger'></i></a>
 
                         </div>

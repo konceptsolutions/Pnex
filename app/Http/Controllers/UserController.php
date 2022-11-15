@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -25,9 +27,15 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $req)
     {
-        //
+        if (Session::get('role_id') == 1) {
+            $user_id = $req->user_id;
+        }else{
+            $user_id = Session::get('user_id');
+        }
+        $user = User::find($user_id);
+        return view('user.user-profile',['user'=>$user]);
     }
 
     /**
@@ -37,9 +45,32 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $rules = array(
+            'name' => 'required|max:255',
+            'phone_no' => 'required|min:5|max:15',
+            'user_id' => 'required|int'
+
+        );
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return redirect()->back()->withInput()->with(['status'=>'danger','message'=>$validator->errors()->first()]);
+        }
+        try{
+            if (Session::get('role_id') == 1) {
+                $user_id = $request->user_id;
+            }else{
+                $user_id = Session::get('user_id');
+            }
+            $user = User::find($user_id);
+            $user->name = $request->name;
+            $user->phone_no = $request->phone_no;
+            $user->save();
+            return back()->with(['status'=>'success','message'=>'Profile Info updated successfully']);
+        }catch(Exception $e){
+            return back()->withInput()->with(['status'=>'danger','message'=>$e->getMessage()]);
+        }
     }
 
     /**
