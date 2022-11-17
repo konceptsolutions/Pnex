@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Services\Settings;
@@ -32,22 +33,23 @@ Route::middleware([AlreadyLoggedIn::class])->group(function () {
     Route::post('register', [AuthController::class, 'store']);
 });
 
-
+//------------------------------------Common routes-----------------------------------
 Route::middleware([NotLoggedIn::class])->group(function () {
 
     Route::get('dashboard', function () {
         return view('index');
     });
 
-    Route::get('products', function () {
-        return view('products.products');
-    });
+    Route::get('getProducts', [ProductController::class, 'index']);
+
 
     Route::get('/user-profile', [UserController::class, 'edit']);
 
     Route::post('/updateUser', [UserController::class, 'update']);
 });
 
+
+//---------------------------------------------Admin Routes -------------------------------------
 Route::middleware([Admin::class])->group(function () {
 
     Route::get('getUsers', [UserController::class, 'index']);
@@ -56,11 +58,15 @@ Route::middleware([Admin::class])->group(function () {
 
     Route::get('getUsersAjax', [UserController::class, 'getUsersAjax'])->name('getUsersAjax');
 
-    Route::get('/addProduct', function () {
-        return view('products.add_product');
-    });
+
+    //--------------------------------------Products--------------------------------------------
+
+    Route::get('addProduct', [ProductController::class, 'create']);
+    Route::post('addProduct', [ProductController::class, 'store']);
 });
 
+
+//-------------------------------------------User Routes--------------------------------------------
 Route::middleware([User::class])->group(function () {
 
     Route::get('viewTeam', [UserController::class, 'viewTeam']);
@@ -68,4 +74,6 @@ Route::middleware([User::class])->group(function () {
     Route::get('getPaginatedTeamAjax', [UserController::class, 'getPaginatedTeamAjax'])->name('getPaginatedTeamAjax');
 
     Route::get('getTeamForWizard', [UserController::class, 'getTeamForWizard'])->name('getTeamForWizard');
+
+    Route::get('buyProduct', [ProductController::class, 'buyProduct']);
 });

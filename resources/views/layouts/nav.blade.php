@@ -40,7 +40,7 @@
                     </li>
                 </ul>
                 <ul>
-                    <li> <a href="{{ url('products') }}" ><i
+                    <li> <a href="{{ url('getProducts') }}" ><i
                                 class="bx bx-right-arrow-alt"></i>Products</a>
                     </li>
                 </ul>
@@ -81,7 +81,7 @@
                     <div class="menu-title"> Products</div>
                 </a>
                 <ul>
-                    <li> <a href="{{ url('products') }}" ><i
+                    <li> <a href="{{ url('getProducts') }}" ><i
                                 class="bx bx-right-arrow-alt"></i>Products</a>
                     </li>
                 </ul>
