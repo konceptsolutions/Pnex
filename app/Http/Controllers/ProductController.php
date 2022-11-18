@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Autonet;
+use App\Models\AutonetCollection;
+use App\Models\AutonetUser;
 use App\Models\Product;
+use App\Models\PurchasedProduct;
 use App\Models\User;
 use App\Models\UserLedger;
 use App\Models\Week;
@@ -21,9 +25,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::where('is_sold',0)->get();
-        return view('products.products',['products'=>$products]);
-
+        $products = Product::where('is_sold', 0)->get();
+        return view('products.products', ['products' => $products]);
     }
 
     /**
@@ -52,19 +55,20 @@ class ProductController extends Controller
         );
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
-            return redirect('addProduct')->withInput()->with(['status'=>'danger','message'=>$validator->errors()->first()]);
+            return redirect('addProduct')->withInput()->with(['status' => 'danger', 'message' => $validator->errors()->first()]);
         }
-        try{
+        try {
             $product = new Product();
             $product->title = $request->title;
             $product->product_type_id = $request->product_type_id;
             $product->product_sub_type_id = $request->product_sub_type_id;
             $product->bv = $request->bv;
             $product->description = $request->description;
+            $product->price = $request->price;
             $product->save();
-            return redirect('products')->with(['status'=>'success','message'=>'Product stored successfully']);
-        }catch(Exception $e){
-            return redirect('addProduct')->withInput()->with(['status'=>'danger','message'=>$e->getMessage()]);
+            return redirect('getProducts')->with(['status' => 'success', 'message' => 'Product stored successfully']);
+        } catch (Exception $e) {
+            return redirect('addProduct')->withInput()->with(['status' => 'danger', 'message' => $e->getMessage()]);
         }
     }
 
@@ -122,27 +126,36 @@ class ProductController extends Controller
      */
     public function buyProduct(Request $req)
     {
-        $product = Product::where([['id',$req->product_id],['is_sold',0]]);
+        $product = Product::where([['id', $req->product_id], ['is_sold', 0]])->first();
         if (!$product) {
-            return back()->with(['status'=>'danger','message'=>'Product not found']);
+            return back()->with(['status' => 'danger', 'message' => 'Product not found']);
         }
 
-        DB::transaction(function () use($req, $product) {
+        DB::transaction(function () use ($req, $product) {
             $bv = $product->bv;
             $product->is_sold = 1;
             $product->save();
 
-            $getWeek = Week::where('is_distributed',0)->orderBy('id','desc')->first();
+            $getWeek = Week::where('is_distributed', 0)->orderBy('id', 'desc')->first();
+
+            //---------------------------------Adding week if not exist------------------
             if (!$getWeek) {
-                $oldWeekNo = Week::orderBy('id','desc')->first();
+                $oldWeekNo = Week::orderBy('id', 'desc')->first();
                 $week = new Week;
                 $week->week_no = $oldWeekNo ? $oldWeekNo->week_no + 1 : 1;
                 $week->save();
                 $week_id = $week->id;
-            }else{
+            } else {
                 $week_id = $getWeek->id;
             }
             $sessionUserId = Session::get('user_id');
+
+            //----------------------------inserting product record----------------------
+            $purchasedProduct = new PurchasedProduct();
+            $purchasedProduct->user_id = $sessionUserId;
+            $purchasedProduct->product_id = $req->product_id;
+            $purchasedProduct->week_id = $week_id;
+            $purchasedProduct->save();
 
             //---------------------updating user status from free ton paid user------------------
             $user = User::find($sessionUserId);
@@ -150,6 +163,17 @@ class ProductController extends Controller
             $user->is_free_user = 0;
             $user->save();
 
+            //-------------------------------Inserting specific percentage in autonets-------------------
+
+            $autonets = Autonet::get();
+            foreach ($autonets as $autonet) {
+                $autonetCollection = new AutonetCollection();
+                $autonetCollection->week_id = $week_id;
+                $autonetCollection->product_id = $req->product_id;
+                $autonetCollection->autonet_id = $autonet->id;
+                $autonetCollection->bv = $bv * $autonet->percentage / 100;
+                $autonetCollection->save();
+            }
             //---------------------Distributing comission in network------------------
 
             $parent1 = User::find($reference_id);
@@ -161,9 +185,53 @@ class ProductController extends Controller
                 $parent1Ledger->debit = 0;
                 $parent1Ledger->credit = 0;
                 $parent1Ledger->balance = 0;
-                $parent1Ledger->bv = $bv;
+                $parent1Ledger->bv = $bv * 40 / 100;
                 $parent1Ledger->week_id = $week_id;
                 $parent1Ledger->save();
+                $parent1Bv = UserLedger::where([['week_id', $week_id], ['user_id', $parent1->id]])->sum('bv');
+
+                //----------------------------------if user reached  to autonet points-----------------
+                $autonetUser = AutonetUser::where([['user_id', $parent1->id], ['week_id', $week_id]])->first();
+                if ($parent1Bv >= $autonets[0]->bv  && $parent1Bv < $autonets[1]->bv) {
+                    if (!$autonetUser) {
+                        $AutonetUser = new AutonetUser;
+                        $AutonetUser->week_id = $week_id;
+                        $AutonetUser->user_id = $parent1->id;
+                        $AutonetUser->autonet_id = $autonets[0]->id;
+                        $AutonetUser->save();
+                    }
+                } elseif ($parent1Bv >= $autonets[1]->bv  && $parent1Bv < $autonets[2]->bv) {
+                    if ($parent1->is_free_user == 0) {
+                        if (!$autonetUser) {
+                            $AutonetUser = new AutonetUser;
+                            $AutonetUser->week_id = $week_id;
+                            $AutonetUser->user_id = $parent1->id;
+                            $AutonetUser->autonet_id = $autonets[1]->id;
+                            $AutonetUser->save();
+                        } else {
+                            $autonetUser->autonet_id = $autonets[1]->id;
+                            $autonetUser->save();
+                        }
+                    }
+                } elseif ($parent1Bv >= $autonets[2]->bv  && $parent1Bv < $autonets[0]->bv +  $autonets[2]->bv) {
+                    if ($parent1->is_free_user == 0) {
+                        if (!$autonetUser) {
+                            $AutonetUser = new AutonetUser;
+                            $AutonetUser->week_id = $week_id;
+                            $AutonetUser->user_id = $parent1->id;
+                            $AutonetUser->autonet_id = $autonets[2]->id;
+                            $AutonetUser->save();
+                        } else {
+                            $autonetUser->autonet_id = $autonets[2]->id;
+                            $autonetUser->save();
+                        }
+                    }
+                }
+                // elseif ($parent1Bv >= $autonets[0]->bv +  $autonets[2]->bv  && $parent1Bv < $autonets[0]->bv + $autonets[1]->bv +  $autonets[2]->bv) {
+                //     # code...
+                // }elseif ($parent1Bv >= $autonets[0]->bv + $autonets[1]->bv +  $autonets[2]->bv  && $parent1Bv < $autonets[0]->bv +  $autonets[2]->bv) {
+                //     # code...
+                // }
 
                 $parent2 = User::find($parent1->reference_id);
                 if ($parent2) {
@@ -175,9 +243,49 @@ class ProductController extends Controller
                         $parent2Ledger->debit = 0;
                         $parent2Ledger->credit = 0;
                         $parent2Ledger->balance = 0;
-                        $parent2Ledger->bv = $bv;
+                        $parent2Ledger->bv = $bv * 5 / 100;
                         $parent2Ledger->week_id = $week_id;
                         $parent2Ledger->save();
+                    }
+
+                    $parent2Bv = UserLedger::where([['week_id', $week_id], ['user_id', $parent2->id]])->sum('bv');
+
+                    //----------------------------------if user reached  to autonet points-----------------
+                    $autonetUser = AutonetUser::where([['user_id', $parent2->id], ['week_id', $week_id]])->first();
+                    if ($parent2Bv >= $autonets[0]->bv  && $parent2Bv < $autonets[1]->bv) {
+                        if (!$autonetUser) {
+                            $AutonetUser = new AutonetUser;
+                            $AutonetUser->week_id = $week_id;
+                            $AutonetUser->user_id = $parent2->id;
+                            $AutonetUser->autonet_id = $autonets[0]->id;
+                            $AutonetUser->save();
+                        }
+                    } elseif ($parent2Bv >= $autonets[1]->bv  && $parent2Bv < $autonets[2]->bv) {
+                        if ($parent2->is_free_user == 0) {
+                            if (!$autonetUser) {
+                                $AutonetUser = new AutonetUser;
+                                $AutonetUser->week_id = $week_id;
+                                $AutonetUser->user_id = $parent2->id;
+                                $AutonetUser->autonet_id = $autonets[1]->id;
+                                $AutonetUser->save();
+                            } else {
+                                $autonetUser->autonet_id = $autonets[1]->id;
+                                $autonetUser->save();
+                            }
+                        }
+                    } elseif ($parent2Bv >= $autonets[2]->bv  && $parent2Bv < $autonets[0]->bv +  $autonets[2]->bv) {
+                        if ($parent2->is_free_user == 0) {
+                            if (!$autonetUser) {
+                                $AutonetUser = new AutonetUser;
+                                $AutonetUser->week_id = $week_id;
+                                $AutonetUser->user_id = $parent2->id;
+                                $AutonetUser->autonet_id = $autonets[2]->id;
+                                $AutonetUser->save();
+                            } else {
+                                $autonetUser->autonet_id = $autonets[2]->id;
+                                $autonetUser->save();
+                            }
+                        }
                     }
                     $parent3 = User::find($parent2->reference_id);
                 }
@@ -190,15 +298,53 @@ class ProductController extends Controller
                         $parent3Ledger->debit = 0;
                         $parent3Ledger->credit = 0;
                         $parent3Ledger->balance = 0;
-                        $parent3Ledger->bv = $bv;
+                        $parent3Ledger->bv = $bv * 5 / 100;
                         $parent3Ledger->week_id = $week_id;
                         $parent3Ledger->save();
                     }
-                    $parent3 = User::find($parent3->reference_id);
-                }
+                    $parent3Bv = UserLedger::where([['week_id', $week_id], ['user_id', $parent3->id]])->sum('bv');
 
+                    //----------------------------------if user reached  to autonet points-----------------
+                    $autonetUser = AutonetUser::where([['user_id', $parent3->id], ['week_id', $week_id]])->first();
+                    if ($parent3Bv >= $autonets[0]->bv  && $parent3Bv < $autonets[1]->bv) {
+                        if (!$autonetUser) {
+                            $AutonetUser = new AutonetUser;
+                            $AutonetUser->week_id = $week_id;
+                            $AutonetUser->user_id = $parent3->id;
+                            $AutonetUser->autonet_id = $autonets[0]->id;
+                            $AutonetUser->save();
+                        }
+                    } elseif ($parent3Bv >= $autonets[1]->bv  && $parent3Bv < $autonets[2]->bv) {
+                        if ($parent3->is_free_user == 0) {
+                            if (!$autonetUser) {
+                                $AutonetUser = new AutonetUser;
+                                $AutonetUser->week_id = $week_id;
+                                $AutonetUser->user_id = $parent3->id;
+                                $AutonetUser->autonet_id = $autonets[1]->id;
+                                $AutonetUser->save();
+                            } else {
+                                $autonetUser->autonet_id = $autonets[1]->id;
+                                $autonetUser->save();
+                            }
+                        }
+                    } elseif ($parent3Bv >= $autonets[2]->bv  && $parent3Bv < $autonets[0]->bv +  $autonets[2]->bv) {
+                        if ($parent3->is_free_user == 0) {
+                            if (!$autonetUser) {
+                                $AutonetUser = new AutonetUser;
+                                $AutonetUser->week_id = $week_id;
+                                $AutonetUser->user_id = $parent3->id;
+                                $AutonetUser->autonet_id = $autonets[2]->id;
+                                $AutonetUser->save();
+                            } else {
+                                $autonetUser->autonet_id = $autonets[2]->id;
+                                $autonetUser->save();
+                            }
+                        }
+                    }
+                }
             }
         });
 
+        return redirect('getProducts')->with(['status' => 'success', 'message' => 'Product purchased successfully']);
     }
 }

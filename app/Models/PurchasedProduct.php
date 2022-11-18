@@ -5,10 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class AutonetCollection extends Model
+class PurchasedProduct extends Model
 {
     use HasFactory;
-
-    protected $fillable = ['week_id', 'product_id', 'autonet_id', 'bv'];
+    protected $fillable = ['product_id', 'user_id', 'week_id'];
 
 }

@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Autonet extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['name', 'percentage', 'bv', 'network_bv','updated_by'];
+
 }
