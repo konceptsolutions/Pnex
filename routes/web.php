@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -39,6 +40,8 @@ Route::middleware([NotLoggedIn::class])->group(function () {
     Route::get('dashboard', function () {
         return view('index');
     });
+
+    Route::get('dashboard', [DashboardController::class, 'index']);
 
     Route::get('getProducts', [ProductController::class, 'index']);
 

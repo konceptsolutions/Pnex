@@ -16,11 +16,11 @@
                                 <div class="d-flex align-items-center">
                                     <div>
                                         <p class="mb-0 text-secondary">Total BV</p>
-                                        <h5 class="my-1 text-info">$4805</h5>
+                                        <h5 class="my-1 text-info">{{ number_format($autonet1bv) }}</h5>
                                     </div>
                                     <div class=" ms-auto">
                                         <p class="mb-0 text-secondary">Total Users</p>
-                                        <h5 class="my-1 text-info">100</h5>
+                                        <h5 class="my-1 text-info">{{ $autonet1Users }}</h5>
                                     </div>
                                 </div>
                             </div>
@@ -36,11 +36,11 @@
                                 <div class="d-flex align-items-center">
                                     <div>
                                         <p class="mb-0 text-secondary">Total BV</p>
-                                        <h5 class="my-1 text-danger">$60000</h5>
+                                        <h5 class="my-1 text-danger">{{ number_format($autonet2bv) }}</h5>
                                     </div>
                                     <div class=" ms-auto">
                                         <p class="mb-0 text-secondary">Total Users</p>
-                                        <h5 class="my-1 text-danger">15</h5>
+                                        <h5 class="my-1 text-danger">{{ $autonet2Users }}</h5>
                                     </div>
                                 </div>
                             </div>
@@ -56,11 +56,11 @@
                                 <div class="d-flex align-items-center">
                                     <div>
                                         <p class="mb-0 text-secondary">Total BV</p>
-                                        <h5 class="my-1 text-success">$54000</h5>
+                                        <h5 class="my-1 text-success">{{ number_format($autonet3bv) }}</h5>
                                     </div>
                                     <div class=" ms-auto">
                                         <p class="mb-0 text-secondary">Total Users</p>
-                                        <h5 class="my-1 text-success">10</h5>
+                                        <h5 class="my-1 text-success">{{ $autonet3Users }}</h5>
                                     </div>
                                 </div>
                             </div>
