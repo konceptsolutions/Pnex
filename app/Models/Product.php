@@ -22,14 +22,19 @@ class Product extends Model
             }
         }
         if ($distribute == 1) {
+            $total_bv = $bv * $percentage / 100;
+            $bv_to_pkr = Setting::where('id', 1)->value('bv_to_pkr');
+            $bv_to_pkr = $bv_to_pkr * $total_bv;
+            $oldBal = UserLedger::where('user_id', $parent->id)->orderBy('id', 'desc')->first();
+            $oldBal = $oldBal->balance ?? 0;
             $parentLedger = new UserLedger;
             $parentLedger->user_id = $parent->id;
             $parentLedger->product_id = $product_id;
             $parentLedger->network_user_id = $sessionUserId;
-            $parentLedger->debit = 0;
+            $parentLedger->debit = $bv_to_pkr;
             $parentLedger->credit = 0;
-            $parentLedger->balance = 0;
-            $parentLedger->bv = $bv * $percentage / 100;
+            $parentLedger->balance = $oldBal + $bv_to_pkr;
+            $parentLedger->bv = $total_bv;
             $parentLedger->week_id = $week_id;
             $parentLedger->save();
         }
@@ -64,7 +69,7 @@ class Product extends Model
                     $AutonetUser->user_id = $parent->id;
                     $AutonetUser->autonet_id = $autonets[1]->id;
                     $AutonetUser->save();
-                } elseif(count($autonetUser) == 1) {
+                } elseif (count($autonetUser) == 1) {
                     if ($autonetUser[0]->autonet_id != $autonets[2]->id) {
                         $autonetUser[0]->autonet_id = $autonets[1]->id;
                         $autonetUser[0]->save();
@@ -84,7 +89,7 @@ class Product extends Model
                     $AutonetUser->user_id = $parent->id;
                     $AutonetUser->autonet_id = $autonets[2]->id;
                     $AutonetUser->save();
-                } elseif(count($autonetUser) == 1) {
+                } elseif (count($autonetUser) == 1) {
                     $autonetUser[0]->autonet_id = $autonets[2]->id;
                     $autonetUser[0]->save();
                 }
@@ -93,42 +98,117 @@ class Product extends Model
 
         //---------------------user is already in autonet 3 now putting user in autonet 1 also----------------
         elseif ($parentBv >= $autonets[0]->bv +  $autonets[2]->bv  && $parentBv <  $autonets[1]->bv +  $autonets[2]->bv) {
-            if ($parent->is_free_user == 0 && count($autonetUser) == 1) {
-                $AutonetUser = new AutonetUser;
-                $AutonetUser->week_id = $week_id;
-                $AutonetUser->user_id = $parent->id;
-                $AutonetUser->autonet_id = $autonets[0]->id;
-                $AutonetUser->save();
+            if ($parent->is_free_user == 0) {
+                if (count($autonetUser) == 0) {
+                    $AutonetUser = new AutonetUser;
+                    $AutonetUser->week_id = $week_id;
+                    $AutonetUser->user_id = $parent->id;
+                    $AutonetUser->autonet_id = $autonets[0]->id;
+                    $AutonetUser->save();
+
+                    $AutonetUser = new AutonetUser;
+                    $AutonetUser->week_id = $week_id;
+                    $AutonetUser->user_id = $parent->id;
+                    $AutonetUser->autonet_id = $autonets[2]->id;
+                    $AutonetUser->save();
+                } elseif (count($autonetUser) == 1) {
+                    $autonetUser[0]->autonet_id = $autonets[2]->id;
+                    $autonetUser[0]->save();
+
+                    $AutonetUser = new AutonetUser;
+                    $AutonetUser->week_id = $week_id;
+                    $AutonetUser->user_id = $parent->id;
+                    $AutonetUser->autonet_id = $autonets[0]->id;
+                    $AutonetUser->save();
+                }
             }
         }
 
         //---------------------user is already in autonet 3 now putting user in autonet 2 also----------------
         elseif ($parentBv >= $autonets[1]->bv +  $autonets[2]->bv  && $parentBv < $autonets[0]->bv + $autonets[1]->bv +  $autonets[2]->bv) {
             if ($parent->is_free_user == 0) {
-                $getAutonetUser2ndTime = AutonetUser::where([['user_id', $parent->id], ['week_id', $week_id]])->orderBy('id', 'desc')->get();
-                if (count($getAutonetUser2ndTime) == 1) {
+                if (count($autonetUser) == 0) {
+                    $AutonetUser = new AutonetUser;
+                    $AutonetUser->week_id = $week_id;
+                    $AutonetUser->user_id = $parent->id;
+                    $AutonetUser->autonet_id = $autonets[2]->id;
+                    $AutonetUser->save();
+
                     $AutonetUser = new AutonetUser;
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $parent->id;
                     $AutonetUser->autonet_id = $autonets[1]->id;
                     $AutonetUser->save();
-                } elseif(count($getAutonetUser2ndTime) == 2) {
-                    if ($getAutonetUser2ndTime[0]->autonet_id != $autonets[2]->id) {
-                        $autonetUser2ndTime = AutonetUser::find($getAutonetUser2ndTime[0]->id);
-                        $autonetUser2ndTime->autonet_id = $autonets[1]->id;
-                        $autonetUser2ndTime->save();
-                    }
+                } elseif (count($autonetUser) == 1) {
+                    $autonetUser[0]->autonet_id = $autonets[2]->id;
+                    $autonetUser[0]->save();
+
+                    $AutonetUser = new AutonetUser;
+                    $AutonetUser->week_id = $week_id;
+                    $AutonetUser->user_id = $parent->id;
+                    $AutonetUser->autonet_id = $autonets[1]->id;
+                    $AutonetUser->save();
+                } elseif (count($autonetUser) == 2) {
+                    $autonetUser[0]->autonet_id = $autonets[2]->id;
+                    $autonetUser[0]->save();
+
+                    $autonetUser[1]->autonet_id = $autonets[1]->id;
+                    $autonetUser[1]->save();
                 }
             }
         }
         //---------------------user is already in autonet 3 and 2 now putting user in autonet 1 also----------------
         elseif ($parentBv >= $autonets[0]->bv + $autonets[1]->bv +  $autonets[2]->bv) {
-            if ($parent->is_free_user == 0 && count($autonetUser) == 2) {
-                $AutonetUser = new AutonetUser;
-                $AutonetUser->week_id = $week_id;
-                $AutonetUser->user_id = $parent->id;
-                $AutonetUser->autonet_id = $autonets[0]->id;
-                $AutonetUser->save();
+            if ($parent->is_free_user == 0) {
+                if (count($autonetUser) == 0) {
+
+                    $AutonetUser = new AutonetUser;
+                    $AutonetUser->week_id = $week_id;
+                    $AutonetUser->user_id = $parent->id;
+                    $AutonetUser->autonet_id = $autonets[0]->id;
+                    $AutonetUser->save();
+
+                    $AutonetUser = new AutonetUser;
+                    $AutonetUser->week_id = $week_id;
+                    $AutonetUser->user_id = $parent->id;
+                    $AutonetUser->autonet_id = $autonets[1]->id;
+                    $AutonetUser->save();
+
+                    $AutonetUser = new AutonetUser;
+                    $AutonetUser->week_id = $week_id;
+                    $AutonetUser->user_id = $parent->id;
+                    $AutonetUser->autonet_id = $autonets[2]->id;
+                    $AutonetUser->save();
+                } elseif (count($autonetUser) == 1) {
+
+                    $autonetUser[0]->autonet_id = $autonets[2]->id;
+                    $autonetUser[0]->save();
+
+                    $AutonetUser = new AutonetUser;
+                    $AutonetUser->week_id = $week_id;
+                    $AutonetUser->user_id = $parent->id;
+                    $AutonetUser->autonet_id = $autonets[1]->id;
+                    $AutonetUser->save();
+
+                    $AutonetUser = new AutonetUser;
+                    $AutonetUser->week_id = $week_id;
+                    $AutonetUser->user_id = $parent->id;
+                    $AutonetUser->autonet_id = $autonets[0]->id;
+                    $AutonetUser->save();
+                } elseif (count($autonetUser) == 2) {
+
+                    $autonetUser[0]->autonet_id = $autonets[2]->id;
+                    $autonetUser[0]->save();
+
+                    $autonetUser[1]->autonet_id = $autonets[1]->id;
+                    $autonetUser[1]->save();
+
+                    $AutonetUser = new AutonetUser;
+                    $AutonetUser->week_id = $week_id;
+                    $AutonetUser->user_id = $parent->id;
+                    $AutonetUser->autonet_id = $autonets[0]->id;
+                    $AutonetUser->save();
+                }
             }
         }
     }
@@ -176,7 +256,7 @@ class Product extends Model
                     $AutonetUser->user_id = $grandParent->id;
                     $AutonetUser->autonet_id = $autonets[1]->id;
                     $AutonetUser->save();
-                } elseif(count($autonetUser) == 1) {
+                } elseif (count($autonetUser) == 1) {
                     if ($autonetUser[0]->autonet_id != $autonets[2]->id) {
                         $autonetUser[0]->autonet_id = $autonets[1]->id;
                         $autonetUser[0]->save();
@@ -196,7 +276,7 @@ class Product extends Model
                     $AutonetUser->user_id = $grandParent->id;
                     $AutonetUser->autonet_id = $autonets[2]->id;
                     $AutonetUser->save();
-                } elseif(count($autonetUser) == 1) {
+                } elseif (count($autonetUser) == 1) {
                     $autonetUser[0]->autonet_id = $autonets[2]->id;
                     $autonetUser[0]->save();
                 }
@@ -205,44 +285,118 @@ class Product extends Model
 
         //---------------------user is already in autonet 3 now putting user in autonet 1 also----------------
         elseif ($parentBv >= $autonets[0]->network_bv +  $autonets[2]->network_bv  && $parentBv <  $autonets[1]->network_bv +  $autonets[2]->network_bv) {
-            if ($grandParent->is_free_user == 0 && count($autonetUser) == 1) {
-                $AutonetUser = new AutonetUser;
-                $AutonetUser->week_id = $week_id;
-                $AutonetUser->user_id = $grandParent->id;
-                $AutonetUser->autonet_id = $autonets[0]->id;
-                $AutonetUser->save();
+            if ($grandParent->is_free_user == 0) {
+                if (count($autonetUser) == 0) {
+                    $AutonetUser = new AutonetUser;
+                    $AutonetUser->week_id = $week_id;
+                    $AutonetUser->user_id = $grandParent->id;
+                    $AutonetUser->autonet_id = $autonets[0]->id;
+                    $AutonetUser->save();
+
+                    $AutonetUser = new AutonetUser;
+                    $AutonetUser->week_id = $week_id;
+                    $AutonetUser->user_id = $grandParent->id;
+                    $AutonetUser->autonet_id = $autonets[2]->id;
+                    $AutonetUser->save();
+                } elseif (count($autonetUser) == 1) {
+                    $autonetUser[0]->autonet_id = $autonets[2]->id;
+                    $autonetUser[0]->save();
+
+                    $AutonetUser = new AutonetUser;
+                    $AutonetUser->week_id = $week_id;
+                    $AutonetUser->user_id = $grandParent->id;
+                    $AutonetUser->autonet_id = $autonets[0]->id;
+                    $AutonetUser->save();
+                }
             }
         }
 
         //---------------------user is already in autonet 3 now putting user in autonet 2 also----------------
         elseif ($parentBv >= $autonets[1]->network_bv +  $autonets[2]->network_bv  && $parentBv < $autonets[0]->network_bv + $autonets[1]->network_bv +  $autonets[2]->network_bv) {
             if ($grandParent->is_free_user == 0) {
-                $getAutonetUser2ndTime = AutonetUser::where([['user_id', $grandParent->id], ['week_id', $week_id]])->orderBy('id', 'desc')->get();
-                if (count($getAutonetUser2ndTime) == 1) {
+                if (count($autonetUser) == 0) {
+                    $AutonetUser = new AutonetUser;
+                    $AutonetUser->week_id = $week_id;
+                    $AutonetUser->user_id = $grandParent->id;
+                    $AutonetUser->autonet_id = $autonets[2]->id;
+                    $AutonetUser->save();
+
                     $AutonetUser = new AutonetUser;
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $grandParent->id;
                     $AutonetUser->autonet_id = $autonets[1]->id;
                     $AutonetUser->save();
-                } elseif(count($getAutonetUser2ndTime) == 2) {
-                    if ($getAutonetUser2ndTime[0]->autonet_id != $autonets[2]->id) {
-                        $autonetUser2ndTime = AutonetUser::find($getAutonetUser2ndTime[0]->id);
-                        $autonetUser2ndTime->autonet_id = $autonets[1]->id;
-                        $autonetUser2ndTime->save();
-                    }
+                } elseif (count($autonetUser) == 1) {
+                    $autonetUser[0]->autonet_id = $autonets[2]->id;
+                    $autonetUser[0]->save();
+
+                    $AutonetUser = new AutonetUser;
+                    $AutonetUser->week_id = $week_id;
+                    $AutonetUser->user_id = $grandParent->id;
+                    $AutonetUser->autonet_id = $autonets[1]->id;
+                    $AutonetUser->save();
+                } elseif (count($autonetUser) == 2) {
+                    $autonetUser[0]->autonet_id = $autonets[2]->id;
+                    $autonetUser[0]->save();
+
+                    $autonetUser[1]->autonet_id = $autonets[1]->id;
+                    $autonetUser[1]->save();
                 }
             }
         }
         //---------------------user is already in autonet 3 and 2 now putting user in autonet 1 also----------------
         elseif ($parentBv >= $autonets[0]->network_bv + $autonets[1]->network_bv +  $autonets[2]->network_bv) {
-            if ($grandParent->is_free_user == 0 && count($autonetUser) == 2) {
-                $AutonetUser = new AutonetUser;
-                $AutonetUser->week_id = $week_id;
-                $AutonetUser->user_id = $grandParent->id;
-                $AutonetUser->autonet_id = $autonets[0]->id;
-                $AutonetUser->save();
+            if ($grandParent->is_free_user == 0) {
+                if (count($autonetUser) == 0) {
+
+                    $AutonetUser = new AutonetUser;
+                    $AutonetUser->week_id = $week_id;
+                    $AutonetUser->user_id = $grandParent->id;
+                    $AutonetUser->autonet_id = $autonets[0]->id;
+                    $AutonetUser->save();
+
+                    $AutonetUser = new AutonetUser;
+                    $AutonetUser->week_id = $week_id;
+                    $AutonetUser->user_id = $grandParent->id;
+                    $AutonetUser->autonet_id = $autonets[1]->id;
+                    $AutonetUser->save();
+
+                    $AutonetUser = new AutonetUser;
+                    $AutonetUser->week_id = $week_id;
+                    $AutonetUser->user_id = $grandParent->id;
+                    $AutonetUser->autonet_id = $autonets[2]->id;
+                    $AutonetUser->save();
+                } elseif (count($autonetUser) == 1) {
+
+                    $autonetUser[0]->autonet_id = $autonets[2]->id;
+                    $autonetUser[0]->save();
+
+                    $AutonetUser = new AutonetUser;
+                    $AutonetUser->week_id = $week_id;
+                    $AutonetUser->user_id = $grandParent->id;
+                    $AutonetUser->autonet_id = $autonets[1]->id;
+                    $AutonetUser->save();
+
+                    $AutonetUser = new AutonetUser;
+                    $AutonetUser->week_id = $week_id;
+                    $AutonetUser->user_id = $grandParent->id;
+                    $AutonetUser->autonet_id = $autonets[0]->id;
+                    $AutonetUser->save();
+                } elseif (count($autonetUser) == 2) {
+
+                    $autonetUser[0]->autonet_id = $autonets[2]->id;
+                    $autonetUser[0]->save();
+
+                    $autonetUser[1]->autonet_id = $autonets[1]->id;
+                    $autonetUser[1]->save();
+
+                    $AutonetUser = new AutonetUser;
+                    $AutonetUser->week_id = $week_id;
+                    $AutonetUser->user_id = $grandParent->id;
+                    $AutonetUser->autonet_id = $autonets[0]->id;
+                    $AutonetUser->save();
+                }
             }
         }
-
     }
 }

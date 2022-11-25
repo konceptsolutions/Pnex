@@ -13,8 +13,14 @@ class DashboardController extends Controller
         $week = Week::where('is_distributed', 0)->orderBy('id', 'desc')->first();
 
         $autonet1Users = AutonetUser::where([['week_id',$week->id],['autonet_id',1]])->count();
+        $companyAccounts = $autonet1Users / 10 + 1;
+        $autonet1Users = $autonet1Users + (int) $companyAccounts;
         $autonet2Users = AutonetUser::where([['week_id',$week->id],['autonet_id',2]])->count();
+        $companyAccounts = $autonet2Users / 10 + 1;
+        $autonet2Users = $autonet2Users + (int) $companyAccounts;
         $autonet3Users = AutonetUser::where([['week_id',$week->id],['autonet_id',3]])->count();
+        $companyAccounts = $autonet3Users / 10 + 1;
+        $autonet3Users = $autonet3Users + (int) $companyAccounts;
         $autonet1bv = AutonetCollection::where([['week_id',$week->id],['autonet_id',1]])->sum('bv');
         $autonet2bv = AutonetCollection::where([['week_id',$week->id],['autonet_id',2]])->sum('bv');
         $autonet3bv = AutonetCollection::where([['week_id',$week->id],['autonet_id',3]])->sum('bv');

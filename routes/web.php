@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ComissionDistributionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
@@ -66,6 +67,9 @@ Route::middleware([Admin::class])->group(function () {
 
     Route::get('addProduct', [ProductController::class, 'create']);
     Route::post('addProduct', [ProductController::class, 'store']);
+
+    //--------------------------------------Comission distribution--------------------------------------------
+    Route::get('distributeComission', [ComissionDistributionController::class, 'distributeComission']);
 });
 
 
