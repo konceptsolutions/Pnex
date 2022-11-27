@@ -111,11 +111,11 @@
 	<!--app JS-->
 	<script src="assets/js/app.js"></script>
     <script>
-        // $(document).ready(function() {
-        //     $("#dismiss").delay(6000).slideUp(300, function() {
-        //         $(this).alert('close');
-        //     });
-        // });
+        $(document).ready(function() {
+            $("#dismiss").delay(6000).slideUp(300, function() {
+                $(this).alert('close');
+            });
+        });
 
         function setTheme(theme){
             $.ajax({

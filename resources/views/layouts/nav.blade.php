@@ -57,6 +57,13 @@
                     </li>
                 </ul>
             </li>
+            <li>
+                <a  href="distributeComission">
+                    <div class="parent-icon"><i class="bx bx-money"></i>
+                    </div>
+                    <div class="menu-title" id="dis_comission">Distribute Comission</div>
+                </a>
+            </li>
         @else
 
             {{-- ---------------------------------------------------------Admin Routes End----------------------------------------- --}}

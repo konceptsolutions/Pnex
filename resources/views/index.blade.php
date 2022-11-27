@@ -6,6 +6,19 @@
 @section("wrapper")
     <div class="page-wrapper">
         <div class="page-content">
+            <div class="row">
+                <div class="col-12">
+                    @if (Session::has('status'))
+                    <div class="alert alert-{{ Session::get('status') }} border-0 bg-{{ Session::get('status') }} alert-dismissible fade show" id="dismiss">
+                        <div class="text-white">{{ Session::get('message')}}</div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"
+                            aria-label="Close"></button>
+                            {{ Session::forget('status') }}
+                            {{ Session::forget('message') }}
+                    </div>
+                    @endif
+                </div>
+            </div>
             <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3">
                 <div class="col">
                     <div class="card radius-10 border-start border-0 border-3 border-info">

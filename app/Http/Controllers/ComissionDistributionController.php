@@ -52,7 +52,6 @@ class ComissionDistributionController extends Controller
             $week->save();
         });
 
-        return 'Comission distributed successfully';
-        // return back()->with(['status'=>'success','message'=>'Comission distributed successfully']);
+        return redirect('dashboard')->with(['status'=>'success','message'=>'Comission distributed successfully']);
     }
 }
