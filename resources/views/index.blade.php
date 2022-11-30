@@ -23,60 +23,81 @@
                 <div class="col">
                     <div class="card radius-10 border-start border-0 border-3 border-info">
                         <div class="card-body">
-                            <div class="p-3 border radius-10">
-                                <h4 class="text-info text-center">Autonet 1</h4>
-                                <hr>
-                                <div class="d-flex align-items-center">
-                                    <div>
-                                        <p class="mb-0 text-secondary">Total BV</p>
-                                        <h5 class="my-1 text-info">{{ number_format($autonet1bv) }}</h5>
-                                    </div>
-                                    <div class=" ms-auto">
-                                        <p class="mb-0 text-secondary">Total Users</p>
-                                        <h5 class="my-1 text-info">{{ $autonet1Users }}</h5>
+                            @if (Session::get('role_id') == 1)
+                                @php($link1 = 'getAutonetUsers?autonet_id=1')
+                            @else
+                                @php($link1 = '')
+                            @endif
+                            <a href="{{ $link1 }}">
+                                <div class="p-3 border radius-10">
+                                    <h4 class="text-info text-center">Autonet 1</h4>
+                                    <hr>
+                                    <div class="d-flex align-items-center">
+                                        <div>
+                                            <p class="mb-0 text-secondary">Total BV</p>
+                                            <h5 class="my-1 text-info">{{ number_format($autonet1bv) }}</h5>
+                                        </div>
+                                        <div class=" ms-auto">
+                                            <p class="mb-0 text-secondary">Total Users</p>
+                                            <h5 class="my-1 text-info">{{ $autonet1Users }}</h5>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     </div>
                 </div>
                 <div class="col">
                     <div class="card radius-10 border-start border-0 border-3 border-danger">
                         <div class="card-body">
-                            <div class="p-3 border radius-10">
-                                <h4 class="text-danger text-center">Autonet 2</h4>
-                                <hr>
-                                <div class="d-flex align-items-center">
-                                    <div>
-                                        <p class="mb-0 text-secondary">Total BV</p>
-                                        <h5 class="my-1 text-danger">{{ number_format($autonet2bv) }}</h5>
-                                    </div>
-                                    <div class=" ms-auto">
-                                        <p class="mb-0 text-secondary">Total Users</p>
-                                        <h5 class="my-1 text-danger">{{ $autonet2Users }}</h5>
+                            @if (Session::get('role_id') == 1)
+                                @php($link2 = 'getAutonetUsers?autonet_id=2')
+                            @else
+                                @php($link2 = '')
+                            @endif
+                            <a href="{{ $link2 }}">
+                                <div class="p-3 border radius-10">
+                                    <h4 class="text-danger text-center">Autonet 2</h4>
+                                    <hr>
+                                    <div class="d-flex align-items-center">
+                                        <div>
+                                            <p class="mb-0 text-secondary">Total BV</p>
+                                            <h5 class="my-1 text-danger">{{ number_format($autonet2bv) }}</h5>
+                                        </div>
+                                        <div class=" ms-auto">
+                                            <p class="mb-0 text-secondary">Total Users</p>
+                                            <h5 class="my-1 text-danger">{{ $autonet2Users }}</h5>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     </div>
                 </div>
                 <div class="col">
                     <div class="card radius-10 border-start border-0 border-3 border-success">
                         <div class="card-body">
-                            <div class="p-3 border radius-10">
-                                <h4 class="text-success text-center">Autonet 3</h4>
-                                <hr>
-                                <div class="d-flex align-items-center">
-                                    <div>
-                                        <p class="mb-0 text-secondary">Total BV</p>
-                                        <h5 class="my-1 text-success">{{ number_format($autonet3bv) }}</h5>
-                                    </div>
-                                    <div class=" ms-auto">
-                                        <p class="mb-0 text-secondary">Total Users</p>
-                                        <h5 class="my-1 text-success">{{ $autonet3Users }}</h5>
+                            @if (Session::get('role_id') == 1)
+                                @php($link3 = 'getAutonetUsers?autonet_id=3')
+                            @else
+                                @php($link3 = '')
+                            @endif
+                            <a href="{{ $link3 }}">
+                                <div class="p-3 border radius-10">
+                                    <h4 class="text-success text-center">Autonet 3</h4>
+                                    <hr>
+                                    <div class="d-flex align-items-center">
+                                        <div>
+                                            <p class="mb-0 text-secondary">Total BV</p>
+                                            <h5 class="my-1 text-success">{{ number_format($autonet3bv) }}</h5>
+                                        </div>
+                                        <div class=" ms-auto">
+                                            <p class="mb-0 text-secondary">Total Users</p>
+                                            <h5 class="my-1 text-success">{{ $autonet3Users }}</h5>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     </div>
                 </div>

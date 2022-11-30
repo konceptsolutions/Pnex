@@ -31,9 +31,9 @@ class Product extends Model
             $parentLedger->user_id = $parent->id;
             $parentLedger->product_id = $product_id;
             $parentLedger->network_user_id = $sessionUserId;
-            $parentLedger->debit = $bv_to_pkr;
-            $parentLedger->credit = 0;
-            $parentLedger->balance = $oldBal + $bv_to_pkr;
+            $parentLedger->debit = 0;
+            $parentLedger->credit = $bv_to_pkr;
+            $parentLedger->balance = $oldBal - $bv_to_pkr;
             $parentLedger->bv = $total_bv;
             $parentLedger->week_id = $week_id;
             $parentLedger->save();

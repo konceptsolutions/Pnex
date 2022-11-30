@@ -29,6 +29,8 @@
     <link rel="stylesheet" href="assets/css/dark-theme.css" />
     <link rel="stylesheet" href="assets/css/semi-dark.css" />
     <link rel="stylesheet" href="assets/css/header-colors.css" />
+    <link href="assets/plugins/select2/css/select2.min.css" rel="stylesheet" />
+	<link href="assets/plugins/select2/css/select2-bootstrap4.css" rel="stylesheet" />
     <title>Pnex</title>
 </head>
 
@@ -108,6 +110,8 @@
 	<script src="assets/plugins/simplebar/js/simplebar.min.js"></script>
 	<script src="assets/plugins/metismenu/js/metisMenu.min.js"></script>
 	<script src="assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
+	<script src="assets/plugins/select2/js/select2.min.js"></script>
+
 	<!--app JS-->
 	<script src="assets/js/app.js"></script>
     <script>
@@ -117,6 +121,18 @@
             });
         });
 
+        $('#dis_comission').on('click',function(){
+            if (!confirm('Are you sure you want to distribute comission')) {
+                event.preventDefault();
+            }
+        });
+
+        $('.single-select').select2({
+			theme: 'bootstrap4',
+			width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+			placeholder: $(this).data('placeholder'),
+			allowClear: Boolean($(this).data('allow-clear')),
+		});
         function setTheme(theme){
             $.ajax({
             type:'GET',

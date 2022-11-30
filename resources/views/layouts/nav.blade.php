@@ -56,6 +56,29 @@
                                 class="bx bx-right-arrow-alt"></i>Users List</a>
                     </li>
                 </ul>
+
+                <ul>
+                    <li> <a href="{{ url('getUserLedger') }}" ><i
+                                class="bx bx-right-arrow-alt"></i>Users Ledger</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a class="has-arrow" href="javascript:;">
+                    <div class="parent-icon"><i class="bx bx-shape-polygon"></i>
+                    </div>
+                    <div class="menu-title"> Autonets</div>
+                </a>
+                <ul>
+                    <li> <a href="{{ url('geAutonets') }}" ><i
+                                class="bx bx-right-arrow-alt"></i>Autonets</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li> <a href="{{ url('getAutonetUsers') }}" ><i
+                                class="bx bx-right-arrow-alt"></i>Users In Autonet</a>
+                    </li>
+                </ul>
             </li>
             <li>
                 <a  href="distributeComission">

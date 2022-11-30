@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AutonetController;
 use App\Http\Controllers\ComissionDistributionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserLedgerController;
 use Illuminate\Support\Facades\Route;
 use App\Services\Settings;
 
@@ -50,6 +52,7 @@ Route::middleware([NotLoggedIn::class])->group(function () {
     Route::get('/user-profile', [UserController::class, 'edit']);
 
     Route::post('/updateUser', [UserController::class, 'update']);
+    Route::get('/getUserLedger', [UserLedgerController::class, 'index']);
 });
 
 
@@ -70,6 +73,10 @@ Route::middleware([Admin::class])->group(function () {
 
     //--------------------------------------Comission distribution--------------------------------------------
     Route::get('distributeComission', [ComissionDistributionController::class, 'distributeComission']);
+
+    //---------------------------------------------Autonets------------------------
+    Route::get('geAutonets', [AutonetController::class, 'index']);
+    Route::get('getAutonetUsers', [AutonetController::class, 'getAutonetUsers']);
 });
 
 
