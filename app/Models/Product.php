@@ -15,8 +15,8 @@ class Product extends Model
     public static function storeAutonetInfo($parent, $product_id, $sessionUserId, $percentage, $bv, $week_id, $autonets)
     {
         $distribute = 1;
-        $sessionUserParent = User::find($sessionUserId);
-        if ($sessionUserParent->reference_id != $parent->id) {
+        $sessionUser = User::find($sessionUserId);
+        if ($sessionUser->reference_id != $parent->id) {
             if ($parent->is_free_user == 1) {
                 $distribute = 0;
             }
@@ -42,7 +42,7 @@ class Product extends Model
 
         //-----Storing the parents of this user in autontes if this user reaches the network bv limit--------
         if ($parentBv >= $autonets[0]->network_bv) {
-            self::storeAutonetUserByHisNetwork($parent->reference_id, $parentBv, $autonets, $week_id);
+            self::storeAutonetUserByHisNetwork($parent->reference_id, $parentBv, $autonets, $week_id, $parent);
         }
         //----------------------------------if user reached  to autonet points-----------------
         $autonetUser = AutonetUser::where([['user_id', $parent->id], ['week_id', $week_id]])->get();
@@ -54,6 +54,7 @@ class Product extends Model
                 $AutonetUser->week_id = $week_id;
                 $AutonetUser->user_id = $parent->id;
                 $AutonetUser->autonet_id = $autonets[0]->id;
+                $AutonetUser->remarks = 'User moved in autonet by his own BV';
                 $AutonetUser->save();
             }
         }
@@ -68,10 +69,12 @@ class Product extends Model
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $parent->id;
                     $AutonetUser->autonet_id = $autonets[1]->id;
+                    $AutonetUser->remarks = 'User moved in autonet by his own BV';
                     $AutonetUser->save();
                 } elseif (count($autonetUser) == 1) {
                     if ($autonetUser[0]->autonet_id != $autonets[2]->id) {
                         $autonetUser[0]->autonet_id = $autonets[1]->id;
+                        $autonetUser[0]->remarks = 'User moved in autonet by his own BV';
                         $autonetUser[0]->save();
                     }
                 }
@@ -88,9 +91,11 @@ class Product extends Model
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $parent->id;
                     $AutonetUser->autonet_id = $autonets[2]->id;
+                    $AutonetUser->remarks = 'User moved in autonet by his own BV';
                     $AutonetUser->save();
                 } elseif (count($autonetUser) == 1) {
                     $autonetUser[0]->autonet_id = $autonets[2]->id;
+                    $autonetUser[0]->remarks = 'User moved in autonet by his own BV';
                     $autonetUser[0]->save();
                 }
             }
@@ -104,21 +109,25 @@ class Product extends Model
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $parent->id;
                     $AutonetUser->autonet_id = $autonets[0]->id;
+                    $AutonetUser->remarks = 'User moved in autonet by his own BV';
                     $AutonetUser->save();
 
                     $AutonetUser = new AutonetUser;
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $parent->id;
                     $AutonetUser->autonet_id = $autonets[2]->id;
+                    $AutonetUser->remarks = 'User moved in autonet by his own BV';
                     $AutonetUser->save();
                 } elseif (count($autonetUser) == 1) {
                     $autonetUser[0]->autonet_id = $autonets[2]->id;
+                    $autonetUser[0]->remarks = 'User moved in autonet by his own BV';
                     $autonetUser[0]->save();
 
                     $AutonetUser = new AutonetUser;
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $parent->id;
                     $AutonetUser->autonet_id = $autonets[0]->id;
+                    $AutonetUser->remarks = 'User moved in autonet by his own BV';
                     $AutonetUser->save();
                 }
             }
@@ -132,27 +141,33 @@ class Product extends Model
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $parent->id;
                     $AutonetUser->autonet_id = $autonets[2]->id;
+                    $AutonetUser->remarks = 'User moved in autonet by his own BV';
                     $AutonetUser->save();
 
                     $AutonetUser = new AutonetUser;
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $parent->id;
                     $AutonetUser->autonet_id = $autonets[1]->id;
+                    $AutonetUser->remarks = 'User moved in autonet by his own BV';
                     $AutonetUser->save();
                 } elseif (count($autonetUser) == 1) {
                     $autonetUser[0]->autonet_id = $autonets[2]->id;
+                    $autonetUser[0]->remarks = 'User moved in autonet by his own BV';
                     $autonetUser[0]->save();
 
                     $AutonetUser = new AutonetUser;
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $parent->id;
                     $AutonetUser->autonet_id = $autonets[1]->id;
+                    $AutonetUser->remarks = 'User moved in autonet by his own BV';
                     $AutonetUser->save();
                 } elseif (count($autonetUser) == 2) {
                     $autonetUser[0]->autonet_id = $autonets[2]->id;
+                    $autonetUser[0]->remarks = 'User moved in autonet by his own BV';
                     $autonetUser[0]->save();
 
                     $autonetUser[1]->autonet_id = $autonets[1]->id;
+                    $autonetUser[1]->remarks = 'User moved in autonet by his own BV';
                     $autonetUser[1]->save();
                 }
             }
@@ -166,47 +181,56 @@ class Product extends Model
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $parent->id;
                     $AutonetUser->autonet_id = $autonets[0]->id;
+                    $AutonetUser->remarks = 'User moved in autonet by his own BV';
                     $AutonetUser->save();
 
                     $AutonetUser = new AutonetUser;
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $parent->id;
                     $AutonetUser->autonet_id = $autonets[1]->id;
+                    $AutonetUser->remarks = 'User moved in autonet by his own BV';
                     $AutonetUser->save();
 
                     $AutonetUser = new AutonetUser;
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $parent->id;
                     $AutonetUser->autonet_id = $autonets[2]->id;
+                    $AutonetUser->remarks = 'User moved in autonet by his own BV';
                     $AutonetUser->save();
                 } elseif (count($autonetUser) == 1) {
 
                     $autonetUser[0]->autonet_id = $autonets[2]->id;
+                    $autonetUser[0]->remarks = 'User moved in autonet by his own BV';
                     $autonetUser[0]->save();
 
                     $AutonetUser = new AutonetUser;
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $parent->id;
                     $AutonetUser->autonet_id = $autonets[1]->id;
+                    $AutonetUser->remarks = 'User moved in autonet by his own BV';
                     $AutonetUser->save();
 
                     $AutonetUser = new AutonetUser;
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $parent->id;
                     $AutonetUser->autonet_id = $autonets[0]->id;
+                    $AutonetUser->remarks = 'User moved in autonet by his own BV';
                     $AutonetUser->save();
                 } elseif (count($autonetUser) == 2) {
 
                     $autonetUser[0]->autonet_id = $autonets[2]->id;
+                    $autonetUser[0]->remarks = 'User moved in autonet by his own BV';
                     $autonetUser[0]->save();
 
                     $autonetUser[1]->autonet_id = $autonets[1]->id;
+                    $autonetUser[1]->remarks = 'User moved in autonet by his own BV';
                     $autonetUser[1]->save();
 
                     $AutonetUser = new AutonetUser;
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $parent->id;
                     $AutonetUser->autonet_id = $autonets[0]->id;
+                    $AutonetUser->remarks = 'User moved in autonet by his own BV';
                     $AutonetUser->save();
                 }
             }
@@ -215,23 +239,23 @@ class Product extends Model
 
 
     //---------------------Storing user in autonet by his team bv-----------------------------------------
-    public static function storeAutonetUserByHisNetwork($reference_id, $parentBv, $autonets, $week_id)
+    public static function storeAutonetUserByHisNetwork($reference_id, $parentBv, $autonets, $week_id, $parent)
     {
         $grandParent1 = User::find($reference_id);
         if ($grandParent1) {
-            self::storeAutonetUsers($grandParent1, $week_id, $autonets, $parentBv);
+            self::storeAutonetUsers($grandParent1, $week_id, $autonets, $parentBv, $parent);
             $grandParent2 = User::find($grandParent1->reference_id);
             if ($grandParent2) {
-                self::storeAutonetUsers($grandParent2, $week_id, $autonets, $parentBv);
+                self::storeAutonetUsers($grandParent2, $week_id, $autonets, $parentBv, $parent);
                 $grandParent3 = User::find($grandParent2->reference_id);
                 if ($grandParent3) {
-                    self::storeAutonetUsers($grandParent3, $week_id, $autonets, $parentBv);
+                    self::storeAutonetUsers($grandParent3, $week_id, $autonets, $parentBv, $parent);
                 }
             }
         }
     }
 
-    public static function storeAutonetUsers($grandParent, $week_id, $autonets, $parentBv)
+    public static function storeAutonetUsers($grandParent, $week_id, $autonets, $parentBv, $parent)
     {
         $autonetUser = AutonetUser::where([['user_id', $grandParent->id], ['week_id', $week_id]])->get();
         //---------------------putting user in autonet 1----------------
@@ -241,6 +265,7 @@ class Product extends Model
                 $AutonetUser->week_id = $week_id;
                 $AutonetUser->user_id = $grandParent->id;
                 $AutonetUser->autonet_id = $autonets[0]->id;
+                $AutonetUser->remarks = 'User moved in autonet by network BV of his team member '.$parent->name.' - '.$parent->id;
                 $AutonetUser->save();
             }
         }
@@ -255,10 +280,12 @@ class Product extends Model
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $grandParent->id;
                     $AutonetUser->autonet_id = $autonets[1]->id;
+                    $AutonetUser->remarks = 'User moved in autonet by network BV of his team member '.$parent->name.' - '.$parent->id;
                     $AutonetUser->save();
                 } elseif (count($autonetUser) == 1) {
                     if ($autonetUser[0]->autonet_id != $autonets[2]->id) {
                         $autonetUser[0]->autonet_id = $autonets[1]->id;
+                        $autonetUser[0]->remarks = 'User moved in autonet by network BV of his team member '.$parent->name.' - '.$parent->id;
                         $autonetUser[0]->save();
                     }
                 }
@@ -275,9 +302,11 @@ class Product extends Model
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $grandParent->id;
                     $AutonetUser->autonet_id = $autonets[2]->id;
+                    $AutonetUser->remarks = 'User moved in autonet by network BV of his team member '.$parent->name.' - '.$parent->id;
                     $AutonetUser->save();
                 } elseif (count($autonetUser) == 1) {
                     $autonetUser[0]->autonet_id = $autonets[2]->id;
+                    $autonetUser[0]->remarks = 'User moved in autonet by network BV of his team member '.$parent->name.' - '.$parent->id;
                     $autonetUser[0]->save();
                 }
             }
@@ -291,21 +320,25 @@ class Product extends Model
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $grandParent->id;
                     $AutonetUser->autonet_id = $autonets[0]->id;
+                    $AutonetUser->remarks = 'User moved in autonet by network BV of his team member '.$parent->name.' - '.$parent->id;
                     $AutonetUser->save();
 
                     $AutonetUser = new AutonetUser;
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $grandParent->id;
                     $AutonetUser->autonet_id = $autonets[2]->id;
+                    $AutonetUser->remarks = 'User moved in autonet by network BV of his team member '.$parent->name.' - '.$parent->id;
                     $AutonetUser->save();
                 } elseif (count($autonetUser) == 1) {
                     $autonetUser[0]->autonet_id = $autonets[2]->id;
+                    $autonetUser[0]->remarks = 'User moved in autonet by network BV of his team member '.$parent->name.' - '.$parent->id;
                     $autonetUser[0]->save();
 
                     $AutonetUser = new AutonetUser;
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $grandParent->id;
                     $AutonetUser->autonet_id = $autonets[0]->id;
+                    $AutonetUser->remarks = 'User moved in autonet by network BV of his team member '.$parent->name.' - '.$parent->id;
                     $AutonetUser->save();
                 }
             }
@@ -319,27 +352,33 @@ class Product extends Model
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $grandParent->id;
                     $AutonetUser->autonet_id = $autonets[2]->id;
+                    $AutonetUser->remarks = 'User moved in autonet by network BV of his team member '.$parent->name.' - '.$parent->id;
                     $AutonetUser->save();
 
                     $AutonetUser = new AutonetUser;
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $grandParent->id;
                     $AutonetUser->autonet_id = $autonets[1]->id;
+                    $AutonetUser->remarks = 'User moved in autonet by network BV of his team member '.$parent->name.' - '.$parent->id;
                     $AutonetUser->save();
                 } elseif (count($autonetUser) == 1) {
                     $autonetUser[0]->autonet_id = $autonets[2]->id;
+                    $autonetUser[0]->remarks = 'User moved in autonet by network BV of his team member '.$parent->name.' - '.$parent->id;
                     $autonetUser[0]->save();
 
                     $AutonetUser = new AutonetUser;
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $grandParent->id;
                     $AutonetUser->autonet_id = $autonets[1]->id;
+                    $AutonetUser->remarks = 'User moved in autonet by network BV of his team member '.$parent->name.' - '.$parent->id;
                     $AutonetUser->save();
                 } elseif (count($autonetUser) == 2) {
                     $autonetUser[0]->autonet_id = $autonets[2]->id;
+                    $autonetUser[0]->remarks = 'User moved in autonet by network BV of his team member '.$parent->name.' - '.$parent->id;
                     $autonetUser[0]->save();
 
                     $autonetUser[1]->autonet_id = $autonets[1]->id;
+                    $autonetUser[1]->remarks = 'User moved in autonet by network BV of his team member '.$parent->name.' - '.$parent->id;
                     $autonetUser[1]->save();
                 }
             }
@@ -353,47 +392,56 @@ class Product extends Model
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $grandParent->id;
                     $AutonetUser->autonet_id = $autonets[0]->id;
+                    $AutonetUser->remarks = 'User moved in autonet by network BV of his team member '.$parent->name.' - '.$parent->id;
                     $AutonetUser->save();
 
                     $AutonetUser = new AutonetUser;
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $grandParent->id;
                     $AutonetUser->autonet_id = $autonets[1]->id;
+                    $AutonetUser->remarks = 'User moved in autonet by network BV of his team member '.$parent->name.' - '.$parent->id;
                     $AutonetUser->save();
 
                     $AutonetUser = new AutonetUser;
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $grandParent->id;
                     $AutonetUser->autonet_id = $autonets[2]->id;
+                    $AutonetUser->remarks = 'User moved in autonet by network BV of his team member '.$parent->name.' - '.$parent->id;
                     $AutonetUser->save();
                 } elseif (count($autonetUser) == 1) {
 
                     $autonetUser[0]->autonet_id = $autonets[2]->id;
+                    $autonetUser[0]->remarks = 'User moved in autonet by network BV of his team member '.$parent->name.' - '.$parent->id;
                     $autonetUser[0]->save();
 
                     $AutonetUser = new AutonetUser;
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $grandParent->id;
                     $AutonetUser->autonet_id = $autonets[1]->id;
+                    $AutonetUser->remarks = 'User moved in autonet by network BV of his team member '.$parent->name.' - '.$parent->id;
                     $AutonetUser->save();
 
                     $AutonetUser = new AutonetUser;
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $grandParent->id;
                     $AutonetUser->autonet_id = $autonets[0]->id;
+                    $AutonetUser->remarks = 'User moved in autonet by network BV of his team member '.$parent->name.' - '.$parent->id;
                     $AutonetUser->save();
                 } elseif (count($autonetUser) == 2) {
 
                     $autonetUser[0]->autonet_id = $autonets[2]->id;
+                    $autonetUser[0]->remarks = 'User moved in autonet by network BV of his team member '.$parent->name.' - '.$parent->id;
                     $autonetUser[0]->save();
 
                     $autonetUser[1]->autonet_id = $autonets[1]->id;
+                    $autonetUser[1]->remarks = 'User moved in autonet by network BV of his team member '.$parent->name.' - '.$parent->id;
                     $autonetUser[1]->save();
 
                     $AutonetUser = new AutonetUser;
                     $AutonetUser->week_id = $week_id;
                     $AutonetUser->user_id = $grandParent->id;
                     $AutonetUser->autonet_id = $autonets[0]->id;
+                    $AutonetUser->remarks = 'User moved in autonet by network BV of his team member '.$parent->name.' - '.$parent->id;
                     $AutonetUser->save();
                 }
             }

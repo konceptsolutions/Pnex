@@ -157,7 +157,7 @@ class ProductController extends Controller
             $purchasedProduct->week_id = $week_id;
             $purchasedProduct->save();
 
-            //---------------------updating user status from free ton paid user------------------
+            //---------------------updating user status from free to paid user------------------
             $user = User::find($sessionUserId);
             $reference_id = $user->reference_id;
             $user->is_free_user = 0;
